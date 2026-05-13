@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes — Omotoyosi</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ============================================================
+       NOTES / BLOG PAGE — standalone styles
+    ============================================================ */
+
+    .notes-page {
+      min-height: 100vh;
+      padding-top: var(--nav-h);
+    }
+
+    /* ── Page header ── */
+    .notes-header {
+      padding: 52px 32px 28px;
+      border-bottom: 1px solid var(--border);
+      animation: safeFadeUp 0.7s ease 0.2s both;
+    }
+
+    .notes-eyebrow {
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .notes-title {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 64px);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    .notes-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      max-width: 440px;
+      line-height: 1.7;
+    }
+
+    @keyframes safeFadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Notes list ── */
+    .notes-list {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ── Individual note / post ── */
+    .note-item {
+      border-bottom: 1px solid var(--border);
+      /* Fade-up on scroll — driven by IntersectionObserver in script below */
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .note-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Note header — always visible, click to expand */
+    .note-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 20px;
+      padding: 28px 0;
+      cursor: none;
+    }
+
+    .note-date {
+      font-size: 8.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .note-title {
+      font-family: var(--font-display);
+      font-size: clamp(18px, 2.8vw, 28px);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 8px;
+      transition: color var(--t-fast);
+    }
+
+    .note-header:hover .note-title { color: var(--text-muted); }
+
+    .note-excerpt {
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--text-muted);
+      max-width: 520px;
+    }
+
+    /* Expand toggle icon */
+    .note-toggle {
+      font-size: 18px;
+      color: var(--text-muted);
+      line-height: 1;
+      margin-top: 28px;
+      /* Rotates when expanded */
+      transition: transform 0.35s ease, color var(--t-fast);
+      flex-shrink: 0;
+      font-style: normal;
+    }
+
+    .note-item.expanded .note-toggle {
+      transform: rotate(45deg);
+      color: var(--text);
+    }
+
+    /* ── Expandable body ── */
+    .note-body {
+      overflow: hidden;
+      /* Height animates from 0 to auto via JS */
+      max-height: 0;
+      transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .note-item.expanded .note-body {
+      /* JS sets this to the actual scrollHeight */
+      max-height: 2000px;
+    }
+
+    .note-body-inner {
+      padding-bottom: 36px;
+    }
+
+    /* Body text styles */
+    .note-body-inner p {
+      font-size: 13px;
+      line-height: 1.85;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .note-body-inner p:last-child { margin-bottom: 0; }
+
+    /* Pull quote within a note */
+    .note-pull {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 2.2vw, 22px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.5;
+      padding: 20px 0 20px 20px;
+      border-left: 2px solid var(--text);
+      margin: 24px 0;
+    }
+
+    /* Image within a note */
+    .note-img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: var(--placeholder);
+      margin: 24px 0;
+      transition: background var(--t);
+    }
+
+    .note-img img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+
+    /* Tags at bottom of post */
+    .note-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .note-tag {
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      transition: border-color var(--t-fast), color var(--t-fast);
+    }
+
+    .note-tag:hover {
+      border-color: var(--text);
+      color: var(--text);
+      cursor: none;
+    }
+
+    /* ── Empty state ── */
+    .notes-empty {
+      text-align: center;
+      padding: 80px 32px;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .notes-header { padding: 40px 16px 24px; }
+      .notes-list   { padding: 0 16px; }
+      .note-header  { padding: 22px 0; gap: 12px; }
+      .note-toggle  { margin-top: 20px; }
+    }
+  </style>
+</head>
+<body class="page-notes">
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Background animated shapes -->
+  <div class="bg-shapes" aria-hidden="true">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <div id="pt" data-label=""></div>
+
+  <div class="cursor"></div>
+  <div class="cursor-dot"></div>
+
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">◐</button>
+
+  <nav class="nav">
+    <div class="nav-col">
+      <span class="nav-label">Independent Photographer <span class="available"><span class="available-dot"></span>Available</span></span>
+      <span class="nav-sub">&amp; Visual Artist</span>
+    </div>
+    <div class="nav-col">
+      <span class="nav-label">Location:</span>
+      <span class="nav-sub">Abuja, Nigeria (<span class="live-time">--:-- --</span>)</span>
+    </div>
+    <div class="nav-col">
+      <span class="nav-label">Navigation:</span>
+      <div class="nav-items">
+        <a class="nav-link" data-href="index.html"    data-label="Home"     href="#">Home</a>
+        <a class="nav-link" data-href="info.html"     data-label="Info"     href="#">Info</a>
+        <a class="nav-link" data-href="work.html"     data-label="Work"     href="#">Work</a>
+        <a class="nav-link" data-href="archive.html"  data-label="Archive"  href="#">Archive</a>
+        <a class="nav-link" data-href="upcoming.html" data-label="Upcoming" href="#">Upcoming</a>
+        <a class="nav-link active"                    href="notes.html">Notes</a>
+        <a class="nav-link" data-href="contact.html"  data-label="Contact"  href="#">Contact</a>
+        <a class="nav-link" data-href="prints.html"       data-label="Prints"       href="#">Prints</a>
+        <a class="nav-link" data-href="testimonials.html" data-label="Kind Words"   href="#">Kind Words</a>
+      </div>
+    </div>
+    <div class="nav-col">
+      <span class="nav-label">Let's connect:</span>
+      <div class="nav-items">
+        <a class="nav-link" href="https://instagram.com/toyosi.i_" target="_blank">Instagram</a>
+        <a class="nav-link" href="https://cosmos.so/toyosi"         target="_blank">Cosmos</a>
+      </div>
+    </div>
+      <!-- Hamburger button — only visible on mobile (hidden on desktop via CSS) -->
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!--
+    MOBILE MENU DRAWER
+    Slides down on mobile when hamburger is tapped.
+    EDIT: Update links here if you add or rename pages.
+  -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-menu-section">
+      <span class="mobile-menu-label">Navigate</span>
+      <nav class="mobile-menu-links">
+        <a class="mobile-menu-link" data-href="index.html" data-label="Home" href="#">Home</a>
+        <a class="mobile-menu-link" data-href="work.html" data-label="Work" href="#">Work</a>
+        <a class="mobile-menu-link" data-href="info.html" data-label="Info" href="#">Info</a>
+        <a class="mobile-menu-link" data-href="archive.html" data-label="Archive" href="#">Archive</a>
+        <a class="mobile-menu-link" data-href="upcoming.html" data-label="Upcoming" href="#">Upcoming</a>
+        <a class="mobile-menu-link" data-href="prints.html" data-label="Prints" href="#">Prints</a>
+        <a class="mobile-menu-link active" href="notes.html">Notes</a>
+        <a class="mobile-menu-link" data-href="testimonials.html" data-label="Kind Words" href="#">Kind Words</a>
+        <a class="mobile-menu-link" data-href="contact.html" data-label="Contact" href="#">Contact</a>
+      </nav>
+    </div>
+    <div class="mobile-menu-section">
+      <span class="mobile-menu-label">Connect</span>
+      <div class="mobile-menu-socials">
+        <!-- EDIT: Update your social URLs -->
+        <a class="mobile-menu-social" href="https://instagram.com/toyosi.i_" target="_blank">Instagram ↗</a>
+        <a class="mobile-menu-social" href="https://cosmos.so/toyosi" target="_blank">Cosmos ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes-page">
+
+    <header class="notes-header">
+      <span class="notes-eyebrow">Process &amp; Thoughts</span>
+      <h1 class="notes-title">Notes</h1>
+      <p class="notes-sub">
+        Behind the shoots. What I was thinking, what went wrong,
+        what I'm learning. Irregular.
+      </p>
+    </header>
+
+    <div class="notes-list" id="notesList">
+      <!-- ADMIN_NOTES_START -->
+      <div class="note-item">
+        <div class="note-header" role="button" tabindex="0" aria-expanded="false">
+          <div>
+            <span class="note-date">March 2024</span>
+            <h2 class="note-title">Building a Visual Language — Why Consistency Matters More Than Variety</h2>
+            <p class="note-excerpt">How I developed a recognizable style, why it matters for your work, and what it actually means in practice.</p>
+          </div>
+          <span class="note-toggle" aria-hidden="true">+</span>
+        </div>
+        <div class="note-body">
+          <div class="note-body-inner">
+            <p>There was a time when I thought every shoot should look different. New lighting approach, new edit style, new mood. Variety felt like growth. Turns out I was just confused.
+Building a visual language means making consistent choices across different subjects and contexts. It means that when someone sees your work, they can recognize it immediately—not because every image is identical, but because they all feel like they belong together. There's a through-line in how you see, how you light, how you edit, how you frame.
+This isn't about style for style's sake. It's about clarity. When your work is consistent, viewers don't have to work to understand what they're looking at. They can focus on the subject, on the moment, on what you're trying to say. Inconsistency distracts. It says you don't know what you're doing yet, or you're still figuring it out. Sometimes that's true. But once you know, consistency becomes a strength.
+My visual language came from repetition and constraint. I use the same camera, the same lens, the same editing software. I shoot primarily in natural light. I prioritize the subject's face and presence over elaborate framing. I edit for clarity and skin tone accuracy rather than drama. These aren't limitations—they're choices that accumulated into something recognizable.
+The consistency is visible in specific ways: how I handle highlights, how I render skin tone, how I compose in the frame, what I choose to include and exclude. Someone familiar with my work could probably guess which images are mine before they see the name. That's not accident. That's the result of making the same intentional choices repeatedly.
+What building a visual language actually requires: patience. You can't force it. You develop it by doing the work, by editing hundreds of images, by noticing what you keep returning to, what choices feel true to you. Then you double down. You commit. You stop second-guessing.
+It also requires resisting trends. Trends feel safe because everyone's doing them, which means they're invisible. Your language only exists if you stick with something long enough for it to become a signature. That takes longer than Instagram's attention span allows.
+The practical side: I archive everything. Every edit, every shoot, every experiment. Not because I might use it again, but because I need to see the pattern. I need to understand what my choices actually look like across a body of work. You can't build consistency if you can't see what you're doing.
+New photographers sometimes ask me when they'll develop their style. I tell them: you already have one. You just need to notice it, commit to it, and stop apologizing for it. Your style isn't something you invent—it's something you reveal through consistent choice.</p>
+            <blockquote class="note-pull">&quot;A visual language isn't a filter. It's a philosophy made visible.&quot;</blockquote>
+            <div class="note-tags">
+              <span class="note-tag">Visual Language</span>
+              <span class="note-tag">Style</span>
+              <span class="note-tag">Consistency</span>
+              <span class="note-tag">Photography Philosophy</span>
+              <span class="note-tag">Editing</span>
+              <span class="note-tag">Direction</span>
+              <span class="note-tag">Craft Development</span>
+              <span class="note-tag">Signature</span>
+              <span class="note-tag">Branding</span>
+              <span class="note-tag">Identity</span>
+              <span class="note-tag">Body of Work</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note-item">
+        <div class="note-header" role="button" tabindex="0" aria-expanded="false">
+          <div>
+            <span class="note-date">May 2024</span>
+            <h2 class="note-title">Editorial vs. Commercial Work — Why One Feels True and the Other Feels Like a Job</h2>
+            <p class="note-excerpt">The mindset shift between the two, what each demands, and why I'm drawn to one over the other.</p>
+          </div>
+          <span class="note-toggle" aria-hidden="true">+</span>
+        </div>
+        <div class="note-body">
+          <div class="note-body-inner">
+            <p>Editorial work and commercial work operate under completely different logic. Both matter. Both have their place. But they require different parts of your brain, and honestly, one feels more like living and the other feels more like working.
+Commercial work has a brief. Client wants X, you deliver X, you get paid. The pressure is about meeting specifications—right mood, right aesthetic, right message for the brand. There's no ambiguity. Success is measured in whether the client is satisfied and whether it sells. It's constraint by design, and that constraint is usually financial. The client is investing in a specific outcome.
+Editorial is different. There's more room for interpretation. You're not selling a product—you're exploring an idea, documenting something real, building a narrative. The brief is looser. The success metric is harder to define. Did it say something true? Does it move people? Is it interesting? Those are subjective questions, which is terrifying and liberating at the same time.
+The mindset shift between the two is real. In commercial work, I'm thinking about the brand, the message, what will resonate with the target audience. I'm problem-solving on behalf of someone else. In editorial, I'm thinking about what I want to say, what I want to show, what I think is true. I'm problem-solving on behalf of the work itself.
+Commercial pays better, usually. That matters. You build a business on commercial work. But editorial is where I learn. It's where I figure out what I actually care about, what my voice sounds like when no one is paying me to sound a certain way. Editorial doesn't pay the bills, but it pays in a different currency—clarity about why you do this.
+The pressure is different too. Commercial pressure is about execution—can you deliver on time, on brand, on brief? Editorial pressure is about integrity—can you say something honest? Can you avoid cliché? Can you add something to the conversation instead of just repeating what's already been said?
+I do both because I have to. Financially, commercially. But if I'm honest, I'm building my portfolio with editorial work. The pieces I'm proudest of are the ones where I made the decisions, where I had time to think, where the only person I had to satisfy was myself and maybe the people I was documenting.
+The ideal would be to find clients who let editorial thinking happen within commercial constraints—who hire me to bring my voice to their project instead of asking me to fit their predetermined vision. Those jobs exist. They're rare, and they pay well because they're rare. That's the work I'm chasing.</p>
+            <blockquote class="note-pull">&quot;Commercial work is craft. Editorial work is voice. You need both, but you need them for different reasons.&quot;</blockquote>
+            <div class="note-tags">
+              <span class="note-tag">Editorial</span>
+              <span class="note-tag">Commercial</span>
+              <span class="note-tag">Client Work</span>
+              <span class="note-tag">Mindset</span>
+              <span class="note-tag">Voice</span>
+              <span class="note-tag">Craft</span>
+              <span class="note-tag">Integrity</span>
+              <span class="note-tag">Business</span>
+              <span class="note-tag">Portfolio</span>
+              <span class="note-tag">Authenticity</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note-item">
+        <div class="note-header" role="button" tabindex="0" aria-expanded="false">
+          <div>
+            <span class="note-date">July 2024</span>
+            <h2 class="note-title">On Directing Subjects — The Difference Between Posing and Presence</h2>
+            <p class="note-excerpt">How I communicate movement, energy, and intention without turning a shoot into performance.</p>
+          </div>
+          <span class="note-toggle" aria-hidden="true">+</span>
+        </div>
+        <div class="note-body">
+          <div class="note-body-inner">
+            <p>The worst direction I ever gave was too much direction. I'd describe a pose in detail—hand here, chin there, weight on this foot—and the subject would lock into it like a mannequin. The image looked technically correct and completely dead. I learned that day that posing and presence are not the same thing.
+Good direction starts with reading someone's body before you ask them to move. How do they naturally stand? What's their resting energy? Some people are expansive, some are contained, some are restless. I watch for thirty seconds before I say anything. That tells me what I'm working with.
+The communication I use now is minimal and intentional. Instead of &quot;move your left shoulder forward,&quot; I'll say &quot;lean in like you're about to share something.&quot; Instead of &quot;look to your right,&quot; I'll say &quot;find something across the room that interests you.&quot; I'm directing energy and intention, not limbs. That's the difference. When someone understands the mood or the moment, their body naturally finds the right shape for it.
+Adjustment happens mid-shoot. I'll take a frame and feel something isn't quite there—maybe the expression is guarded, maybe the posture is too stiff. I don't go back to detailed instruction. I'll say &quot;relax your shoulders,&quot; or &quot;breathe,&quot; or sometimes just &quot;again, but more yourself this time.&quot; Small adjustments, not rebuilding.
+Reading the room matters too. If someone's energy is dropping, we take a break instead of pushing. If they're finding momentum, we keep going. The best portraits often come when someone forgets they're being photographed—that's when presence happens. My job is to create the conditions for that, not to force it.
+The difference between a good shoot and a great one often comes down to direction. Good technique makes a usable image. Good direction makes an image that feels true. It's the difference between someone looking at the camera and someone being with the camera.
+I learned this slowly—through frames that felt awkward, through subjects who looked relieved when the shoot ended, through realizing that my detailed instruction was getting in the way of what made them interesting. Now I listen more than I talk. I suggest more than I demand. And the images feel like they actually happened, not like they were assembled.</p>
+            <blockquote class="note-pull">&quot;A pose is what you do. Presence is who you are. I'm shooting for the latter.&quot;</blockquote>
+            <div class="note-tags">
+              <span class="note-tag">Direction</span>
+              <span class="note-tag">Portraiture</span>
+              <span class="note-tag">Presence</span>
+              <span class="note-tag">Posing</span>
+              <span class="note-tag">Communication</span>
+              <span class="note-tag">Editorial</span>
+              <span class="note-tag">Energy</span>
+              <span class="note-tag">Intention</span>
+              <span class="note-tag">Craft</span>
+              <span class="note-tag">Skill</span>
+              <span class="note-tag">Psychology</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note-item">
+        <div class="note-header" role="button" tabindex="0" aria-expanded="false">
+          <div>
+            <span class="note-date">October 2024</span>
+            <h2 class="note-title">Lakin Ogunbanwo and What I Learned From Studying His Work</h2>
+            <p class="note-excerpt">The photographer whose restraint and precision shaped how I see portraiture. What I've stolen, what I'm still learning.</p>
+          </div>
+          <span class="note-toggle" aria-hidden="true">+</span>
+        </div>
+        <div class="note-body">
+          <div class="note-body-inner">
+            <p>I studied Lakin's work for months before I realized I was studying it. I'd be editing a portrait and think: why does that feel so settled? I'd pull up one of his images and see it immediately—the discipline. The refusal to overcomplicate. The way a pose can be simple and still carry weight.
+What draws me to his portraiture is the clarity. There's no confusion about who is being photographed or what matters in the frame. The subject is centered, grounded, present. The background doesn't compete. The light serves the face. It sounds simple, but simplicity at that level requires extreme intentionality. You have to know exactly what you're keeping and what you're removing.
+His use of negative space taught me something crucial: emptiness is a design choice. You don't fill a frame because you can. You leave space around your subject deliberately, which somehow makes them feel larger, more important. It's counterintuitive—less becomes more because the viewer's eye has nowhere else to go.
+The precision in his direction is another lesson I keep returning to. His subjects aren't performing. They're present. That's not accident—that's direction. He knows how to communicate what he wants without overexplaining, how to read someone's energy and adjust, when to ask for another take and when to know you have it. I watch his portraits and think: how much did he say to get that expression? Probably very little.
+What I've stolen from him: the power of direct gaze, the importance of skin tone rendering, the discipline of not moving the camera unnecessarily, the confidence that a simple frame can be profound. I've also stolen his approach to consistency—his work feels cohesive across different subjects because his vision is clear, not because he's applying the same preset.
+What I'm still learning: how to balance accessibility with that level of precision. How to direct subjects without making them feel over-worked. How to trust that a simple image is enough. Lakin's work reminds me that photography doesn't need to be complicated to be powerful. It needs to be intentional.</p>
+            <blockquote class="note-pull">&quot;Restraint is a skill. Knowing what to leave out is harder than knowing what to put in.&quot;</blockquote>
+            <div class="note-tags">
+              <span class="note-tag">Lakin Ogunbanwo</span>
+              <span class="note-tag">Portraiture</span>
+              <span class="note-tag">Influence</span>
+              <span class="note-tag">Direction</span>
+              <span class="note-tag">Restraint</span>
+              <span class="note-tag">Discipline</span>
+              <span class="note-tag">Precision</span>
+              <span class="note-tag">African Photography</span>
+              <span class="note-tag">Simplicity</span>
+              <span class="note-tag">Study</span>
+              <span class="note-tag">Craft</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note-item">
+        <div class="note-header" role="button" tabindex="0" aria-expanded="false">
+          <div>
+            <span class="note-date">August 2024</span>
+            <h2 class="note-title">On Shooting in Harsh Light</h2>
+            <p class="note-excerpt">No ND filters, no diffusion, no excuses. How I learned to see Abuja's harsh light as an advantage instead of a problem.</p>
+          </div>
+          <span class="note-toggle" aria-hidden="true">+</span>
+        </div>
+        <div class="note-body">
+          <div class="note-body-inner">
+            <p>Every photography guide will tell you: never shoot in midday sun. Too harsh, too contrasty, shadows are too dark, highlights blow out. Avoid it. Use golden hour. Wait for clouds. The conventional wisdom assumes you have options.
+In Abuja, especially when you're on a shoot with limited time and a locked schedule, you don't always have options. You show up at noon because that's when the subject is available. The light is brutal. And I've learned to stop fighting it.
+The first shift in thinking: harsh light isn't a problem to solve, it's a condition to work with. Shadows become definition. High contrast can feel intentional instead of accidental. The challenge is exposure—I expose for the face, let the background burn if it needs to, and trust that Photoshop will help me recover what I need. It's a different workflow than soft, forgiving light, but it's not inferior. It's just specific.
+Positioning matters more in harsh light. You can't hide in diffusion, so you have to be precise about where your subject stands relative to the sun. Side light creates dimension. Backlighting separates them from the background. Direct front light is harder but possible if you're intentional about angle and expression. Every move counts because there's nowhere to hide.
+The no-filter approach keeps me mobile and forced into creativity. When I can't soften the light with equipment, I have to soften it with positioning, expression, and timing. That constraint has made me a better shooter because I can't rely on gear to save a bad frame. It forces presence.
+Abuja's light is intense, uncompromising, real. Once I stopped seeing that as a limitation and started seeing it as a characteristic, my work got stronger. The images feel grounded in place. They don't look like they could have been shot anywhere—they feel distinctly Abuja.</p>
+            <blockquote class="note-pull">&quot;Harsh light doesn't produce bad images. It produces honest ones.&quot;</blockquote>
+            <div class="note-tags">
+              <span class="note-tag">Light</span>
+              <span class="note-tag">Abuja</span>
+              <span class="note-tag">Harsh Conditions</span>
+              <span class="note-tag">Natural Light</span>
+              <span class="note-tag">Editorial</span>
+              <span class="note-tag">Portraiture</span>
+              <span class="note-tag">Adaptation</span>
+              <span class="note-tag">Workflow</span>
+              <span class="note-tag">Photoshop</span>
+              <span class="note-tag">No Gear</span>
+              <span class="note-tag">Intentionality</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note-item">
+        <div class="note-header" role="button" tabindex="0" aria-expanded="false">
+          <div>
+            <span class="note-date">Ma 2025</span>
+            <h2 class="note-title">On shooting Adé Ìbílẹ̀ — Carrying what was already there</h2>
+            <p class="note-excerpt">Power didn’t need to be performed—it settled into the stillness. The strongest frames came from quiet moments where nothing was forced and everything felt grounded. “Adé Ìbílẹ̀” became less about creating and more about stepping into what was already there.</p>
+          </div>
+          <span class="note-toggle" aria-hidden="true">+</span>
+        </div>
+        <div class="note-body">
+          <div class="note-body-inner">
+
+            <div class="note-tags">
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note-item">
+        <div class="note-header" role="button" tabindex="0" aria-expanded="false">
+          <div>
+            <span class="note-date">January 2025</span>
+            <h2 class="note-title">On Covering IDP Outreach — Why I Volunteer with The Humanity Anchor Initiative</h2>
+            <p class="note-excerpt">It's not poverty tourism. Here's how I think about documentation, consent, and the ethics of the lens when you're part of something bigger.</p>
+          </div>
+          <span class="note-toggle" aria-hidden="true">+</span>
+        </div>
+        <div class="note-body">
+          <div class="note-body-inner">
+            <p>I volunteer with The Humanity Anchor Initiative because I believe presence matters. Not the performative kind—the actual kind. Showing up consistently, doing work without broadcasting it, believing that the less privileged deserve the same dignity and attention as anyone else. That's what drew me to them, and that's what I try to bring when I cover their outreach events.
+There's something broken about a system where access to kindness becomes a luxury. Where goodwill is something you have to be fortunate enough to receive. I wanted to be part of changing that, even in small ways. Volunteering with HAI isn't charity in the traditional sense—it's recognition. These are communities that have been written off by institutions, forgotten by systems, treated as problems instead of people. My job is to help make sure that changes, at least in how their stories get told.
+When I bring my camera to their events, I'm there to document what's actually happening: the work being done, the connections being built, the humanity that persists even in constraint. Not as a savior narrative—I'm not the hero here. The people in those camps, the volunteers organizing, the organization doing the work—they're the story. I'm just making sure it doesn't disappear.
+The ethics matter because extraction happens so easily in this space. You show up with a camera, you find the most heartbreaking moment, you leave with a powerful image and a clear conscience. But what did you actually contribute? What did that person gain from being documented? I wanted to work differently, which is why I'm with THAI. They have accountability built in. They know the communities. They're not parachuting in for a day—they're committed.
+My role is clear: I document the work, I share images that reflect reality without exploitation, and I make sure the people I photograph have agency over their own narratives. I ask permission. I share what I'm working on. I don't publish anything that could put someone at risk. And I'm transparent about why I'm there, to help THAI's work reach people who need to see it, to create a visual record that these communities and this work exist.
+Why extend goodwill to the less privileged? Because privilege itself is arbitrary. Circumstances change. Systems fail people through no fault of their own. And because human dignity doesn't come with a price tag. Everyone deserves to be seen, supported, and treated with respect—not because it makes us feel good, but because it's the bare minimum of what we owe each other.
+Being part of THAI reminded me why I started photography in the first place: to bear witness, to amplify voices that don't get heard, to use what I have in service of something bigger than myself.</p>
+            <blockquote class="note-pull">&quot;Kindness isn't charity. It's recognizing that someone's circumstances don't determine their worth.&quot;</blockquote>
+            <div class="note-tags">
+              <span class="note-tag">Documentary</span>
+              <span class="note-tag">The Humanity Anchor Initiative</span>
+              <span class="note-tag">Ethics</span>
+              <span class="note-tag">IDP Camps</span>
+              <span class="note-tag">Outreach</span>
+              <span class="note-tag">Community Work</span>
+              <span class="note-tag">Consent</span>
+              <span class="note-tag">Representation</span>
+              <span class="note-tag">Abuja</span>
+              <span class="note-tag">Social Photography</span>
+              <span class="note-tag">Agency</span>
+              <span class="note-tag">Responsibility</span>
+              <span class="note-tag">Impact</span>
+              <span class="note-tag">Volunteering</span>
+              <span class="note-tag">Dignity</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note-item">
+        <div class="note-header" role="button" tabindex="0" aria-expanded="false">
+          <div>
+            <span class="note-date">November 2024</span>
+            <h2 class="note-title">What I'm using and why</h2>
+            <p class="note-excerpt">My current kit, my Lightroom approach, and why I've stopped
+              chasing new gear.</p>
+          </div>
+          <span class="note-toggle" aria-hidden="true">+</span>
+        </div>
+        <div class="note-body">
+          <div class="note-body-inner">
+            <p>For a long time I thought better gear meant better images. New body, new lens, new modifier—chase the specs and the photos will follow. I've since learned that's mostly nonsense. The D3200 and a 50mm f/1.8 can do almost everything I need, and the limiting factor is never the camera anymore.
+My current kit is stripped down: Nikon D3200, 50mm f/1.8G. That's genuinely it. No tripod, no filters, no extra weight. The 50mm taught me to move instead of zoom—it forces intention into composition. You can't be lazy with a fixed focal length. And working without a tripod keeps me mobile, especially on shoots where I need to adapt quickly to changing light and energy on set.
+The editing side is where the real work happens. I shoot in RAW and edit everything in Photoshop. My approach is consistency over drama: I'm building a visual language across images, not trying to make each frame look spectacular in isolation. Exposure and curves come first. Then shadows and highlights get attention. Selective sharpening on eyes and details. Skin tone gets touched carefully—I'm not trying to change someone's appearance, just clarify what's already there. The goal is images that feel like they belong to the same body of work, not a collection of different aesthetics.
+Photoshop gives me control that other tools don't. I can be surgical about what I adjust. A dodge here, a subtle desaturation there. The precision matters when you're building a consistent visual language across editorial work. Every image gets the same level of intention.
+&quot;The camera isn't the bottleneck anymore. Your eye and your intention are.&quot;
+Why I stopped chasing gear: I realized every new piece of equipment came with a cost in attention. More lenses meant more time deciding which to pack. Better body meant more time comparing specs instead of thinking about light. The mental overhead wasn't worth the marginal gain. I cut everything down to essentials and immediately took better photos because I could focus on the actual work.
+The constraint of minimal gear actually sharpened my practice. No tripod means I'm constantly engaged with framing and positioning. No filters mean I'm working with what the light gives me, learning to see possibility in harsh conditions instead of trying to correct them away. Less equipment, more presence.</p>
+            <blockquote class="note-pull">&quot;The camera isn't the bottleneck anymore. Your eye and your intention are.&quot;</blockquote>
+            <div class="note-tags">
+              <span class="note-tag">Gear</span>
+              <span class="note-tag">Equipment</span>
+              <span class="note-tag">D3200</span>
+              <span class="note-tag">50mm</span>
+              <span class="note-tag">Workflow</span>
+              <span class="note-tag">Photoshop</span>
+              <span class="note-tag">Editing</span>
+              <span class="note-tag">Minimalism</span>
+              <span class="note-tag">Philosophy</span>
+              <span class="note-tag">Process</span>
+              <span class="note-tag">Intention</span>
+            </div>
+          </div>
+        </div>
+      </div><!-- ADMIN_NOTES_END -->
+      <!--
+        EDIT: Add more notes above this comment.
+        Newest posts go at the TOP of the list.
+      -->
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    /* ============================================================
+       NOTES PAGE — expand/collapse and scroll reveal logic
+    ============================================================ */
+
+    // ── Expand / collapse posts ──────────────────────────────
+    const noteItems = document.querySelectorAll('.note-item');
+
+    noteItems.forEach(item => {
+      const header = item.querySelector('.note-header');
+      if (!header) return;
+
+      header.addEventListener('click', () => {
+        const isExpanded = item.classList.contains('expanded');
+
+        // Close all other posts first (accordion behaviour)
+        // EDIT: Remove the forEach below if you want multiple posts open at once
+        noteItems.forEach(other => {
+          if (other !== item) {
+            other.classList.remove('expanded');
+            const otherHeader = other.querySelector('.note-header');
+            if (otherHeader) otherHeader.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // Toggle this post
+        item.classList.toggle('expanded', !isExpanded);
+        header.setAttribute('aria-expanded', !isExpanded);
+      });
+
+      // Keyboard: Enter or Space to toggle
+      header.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          header.click();
+        }
+      });
+    });
+
+    // ── Scroll reveal ────────────────────────────────────────
+    // Each note fades up as it enters the viewport
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObs.unobserve(entry.target); // Only animate once
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+
+    noteItems.forEach(item => revealObs.observe(item));
+
+  </script>
+</body>
+</html>
