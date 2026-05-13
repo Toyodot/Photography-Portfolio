@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prints — Omotoyosi</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ============================================================
+       PRINTS PAGE — standalone styles
+    ============================================================ */
+
+    .prints-page {
+      min-height: 100vh;
+      padding-top: var(--nav-h);
+    }
+
+    /* ── Page header ── */
+    .prints-header {
+      padding: 52px 32px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .prints-eyebrow {
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 10px;
+      /* Simple fade-up — safe CSS animation */
+      animation: safeFadeUp 0.7s ease 0.2s both;
+    }
+
+    .prints-title {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 64px);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--text);
+      animation: safeFadeUp 0.8s ease 0.3s both;
+    }
+
+    .prints-note {
+      font-size: 11px;
+      line-height: 1.7;
+      color: var(--text-muted);
+      max-width: 260px;
+      text-align: right;
+      animation: safeFadeUp 0.8s ease 0.4s both;
+    }
+
+    @keyframes safeFadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Coming Soon Display ── */
+    .prints-coming-soon {
+      grid-column: 1 / -1;
+      padding: 80px 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      animation: safeFadeUp 0.8s ease 0.4s both;
+    }
+
+    .prints-coming-soon h2 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .prints-coming-soon p {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 360px;
+      line-height: 1.6;
+    }
+
+    .prints-contact-btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: var(--text);
+      color: var(--bg);
+      border: 1px solid var(--text);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 16px;
+    }
+
+    .prints-contact-btn:hover {
+      background: transparent;
+      color: var(--text);
+    }
+
+    /* ── Print grid ── */
+    .prints-grid {
+      display: grid;
+      /*
+        EDIT: Change the number to adjust columns.
+        3 = three columns, 2 = two, etc.
+        auto-fill makes it responsive automatically.
+      */
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Individual print card ── */
+    .print-card {
+      background: var(--bg);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: background var(--t);
+      /* Staggered fade-in — each card gets --i set by inline style */
+      opacity: 0;
+      animation: safeFadeUp 0.6s ease calc(0.1s + var(--i, 0) * 0.08s) both;
+    }
+
+    /* Image placeholder / actual image */
+    .print-image-wrap {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      background: var(--placeholder);
+      margin-bottom: 20px;
+      position: relative;
+      transition: background var(--t);
+    }
+
+    .print-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      /* Subtle zoom on hover — safe CSS only */
+      transition: transform 0.7s ease;
+    }
+
+    .print-card:hover .print-image-wrap img {
+      transform: scale(1.04);
+    }
+
+    /* Edition badge — e.g. "Ed. 10" */
+    .print-edition-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+      background: rgba(0,0,0,0.45);
+      padding: 4px 8px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Sold out overlay */
+    .print-image-wrap.sold-out::after {
+      content: 'Sold Out';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Print info */
+    .print-series {
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .print-title {
+      font-family: var(--font-display);
+      font-size: clamp(18px, 2vw, 24px);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    /* Print specs: size, paper, etc. */
+    .print-specs {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .print-spec {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .print-spec-label {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .print-spec-value {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-style: italic;
+      color: var(--text);
+    }
+
+    /* Price + order row */
+    .print-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .print-price {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--text);
+    }
+
+    .print-currency {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-right: 2px;
+    }
+
+    /* Order button */
+    .print-order-btn {
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--text);
+      border: 1px solid var(--text);
+      padding: 10px 20px;
+      cursor: none;
+      transition: background var(--t-fast), color var(--t-fast);
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .print-order-btn:hover {
+      background: transparent;
+      color: var(--text);
+    }
+
+    /* Disabled/sold out button */
+    .print-order-btn.disabled {
+      background: var(--placeholder);
+      border-color: var(--border);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* ── Shipping info bar ── */
+    .prints-info-bar {
+      padding: 28px 32px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 24px;
+      animation: safeFadeUp 0.8s ease 0.8s both;
+    }
+
+    .info-bar-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .info-bar-label {
+      font-size: 8px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .info-bar-value {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .prints-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 40px 16px 20px;
+      }
+      .prints-note { text-align: left; max-width: 100%; }
+      .prints-grid { grid-template-columns: 1fr; }
+      .print-card  { padding: 20px; }
+      .prints-info-bar { padding: 24px 16px; }
+    }
+  </style>
+</head>
+<body class="page-prints">
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Background animated shapes -->
+  <div class="bg-shapes" aria-hidden="true">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <div id="pt" data-label=""></div>
+
+  <div class="cursor"></div>
+  <div class="cursor-dot"></div>
+
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">◐</button>
+
+  <nav class="nav">
+    <div class="nav-col">
+      <span class="nav-label">Independent Photographer <span class="available"><span class="available-dot"></span>Available</span></span>
+      <span class="nav-sub">&amp; Visual Artist</span>
+    </div>
+    <div class="nav-col">
+      <span class="nav-label">Location:</span>
+      <span class="nav-sub">Abuja, Nigeria (<span class="live-time">--:-- --</span>)</span>
+    </div>
+    <div class="nav-col">
+      <span class="nav-label">Navigation:</span>
+      <div class="nav-items">
+        <a class="nav-link" data-href="index.html"    data-label="Home"     href="#">Home</a>
+        <a class="nav-link" data-href="info.html"     data-label="Info"     href="#">Info</a>
+        <a class="nav-link" data-href="work.html"     data-label="Work"     href="#">Work</a>
+        <a class="nav-link" data-href="archive.html"  data-label="Archive"  href="#">Archive</a>
+        <a class="nav-link" data-href="upcoming.html" data-label="Upcoming" href="#">Upcoming</a>
+        <a class="nav-link" data-href="contact.html"  data-label="Contact"  href="#">Contact</a>
+        <a class="nav-link active"                    href="prints.html">Prints</a>
+        <a class="nav-link" data-href="notes.html"        data-label="Notes"        href="#">Notes</a>
+        <a class="nav-link" data-href="testimonials.html" data-label="Kind Words"   href="#">Kind Words</a>
+      </div>
+    </div>
+    <div class="nav-col">
+      <span class="nav-label">Let's connect:</span>
+      <div class="nav-items">
+        <a class="nav-link" href="https://instagram.com/toyosi.i_" target="_blank">Instagram</a>
+        <a class="nav-link" href="https://cosmos.so/toyosi"         target="_blank">Cosmos</a>
+      </div>
+    </div>
+      <!-- Hamburger button — only visible on mobile (hidden on desktop via CSS) -->
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!--
+    MOBILE MENU DRAWER
+    Slides down on mobile when hamburger is tapped.
+    EDIT: Update links here if you add or rename pages.
+  -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-menu-section">
+      <span class="mobile-menu-label">Navigate</span>
+      <nav class="mobile-menu-links">
+        <a class="mobile-menu-link" data-href="index.html" data-label="Home" href="#">Home</a>
+        <a class="mobile-menu-link" data-href="work.html" data-label="Work" href="#">Work</a>
+        <a class="mobile-menu-link" data-href="info.html" data-label="Info" href="#">Info</a>
+        <a class="mobile-menu-link" data-href="archive.html" data-label="Archive" href="#">Archive</a>
+        <a class="mobile-menu-link" data-href="upcoming.html" data-label="Upcoming" href="#">Upcoming</a>
+        <a class="mobile-menu-link active" href="prints.html">Prints</a>
+        <a class="mobile-menu-link" data-href="notes.html" data-label="Notes" href="#">Notes</a>
+        <a class="mobile-menu-link" data-href="testimonials.html" data-label="Kind Words" href="#">Kind Words</a>
+        <a class="mobile-menu-link" data-href="contact.html" data-label="Contact" href="#">Contact</a>
+      </nav>
+    </div>
+    <div class="mobile-menu-section">
+      <span class="mobile-menu-label">Connect</span>
+      <div class="mobile-menu-socials">
+        <!-- EDIT: Update your social URLs -->
+        <a class="mobile-menu-social" href="https://instagram.com/toyosi.i_" target="_blank">Instagram ↗</a>
+        <a class="mobile-menu-social" href="https://cosmos.so/toyosi" target="_blank">Cosmos ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="prints-page">
+
+    <header class="prints-header">
+      <div>
+        <span class="prints-eyebrow">Limited Editions</span>
+        <h1 class="prints-title">Prints</h1>
+      </div>
+      <!--
+        EDIT: Change this note to describe your printing process,
+        paper stock, or anything relevant to buyers.
+      -->
+      <p class="prints-note">
+        All prints are archival pigment on 300gsm fine art paper.
+        Signed and numbered by hand. Shipped from Abuja, Nigeria.
+      </p>
+    </header>
+
+    <div class="prints-grid" id="printsGrid">
+      <!-- PRINTS_COMING_START -->
+      <div class="prints-coming-soon">
+        <h2>Coming Soon</h2>
+        <p id="comingSoonMessage">Interested in prints? Get in touch.</p>
+        <a href="contact.html" class="prints-contact-btn">Contact Me</a>
+      </div>
+      <!-- PRINTS_COMING_END -->
+    </div>
+
+    <!-- Info bar below the grid -->
+    <div class="prints-info-bar">
+      <!-- EDIT: Update each of these with your real policies -->
+      <div class="info-bar-item">
+        <span class="info-bar-label">Shipping</span>
+        <span class="info-bar-value">Nationwide delivery. International on request.</span>
+      </div>
+      <div class="info-bar-item">
+        <span class="info-bar-label">Certificate</span>
+        <span class="info-bar-value">Each print comes with a signed certificate of authenticity.</span>
+      </div>
+      <div class="info-bar-item">
+        <span class="info-bar-label">Custom sizes</span>
+        <span class="info-bar-value">Available on commission. Contact to discuss.</span>
+      </div>
+      <div class="info-bar-item">
+        <span class="info-bar-label">Payment</span>
+        <!-- EDIT: Change to reflect your actual accepted payment methods -->
+        <span class="info-bar-value">Bank transfer, or cash on pickup.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

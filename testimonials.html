@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testimonials — Omotoyosi</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ============================================================
+       TESTIMONIALS PAGE — standalone styles
+    ============================================================ */
+
+    .testimonials-page {
+      min-height: 100vh;
+      padding-top: var(--nav-h);
+    }
+
+    /* ── Page header ── */
+    .testimonials-header {
+      padding: 52px 32px 28px;
+      border-bottom: 1px solid var(--border);
+      animation: tFadeUp 0.7s ease 0.2s both;
+    }
+
+    .testimonials-eyebrow {
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .testimonials-title {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 64px);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    @keyframes tFadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Testimonials grid ── */
+    .testimonials-grid {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+
+    .testimonials-slider {
+      overflow: hidden;
+    }
+
+    .testimonial-card {
+      flex: 0 0 100%;
+      background: var(--bg);
+      padding: 44px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      transition: background var(--t);
+
+      /* Scroll reveal — JS adds .visible */
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.65s ease,
+        transform 0.65s ease,
+        background var(--t);
+    }
+
+    .slider-controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .slider-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background var(--t);
+    }
+
+    .slider-btn:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .slider-btn.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .testimonial-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Large opening quote mark */
+    .testimonial-quote-mark {
+      font-family: var(--font-display);
+      font-size: 80px;
+      line-height: 0.6;
+      color: var(--border);
+      display: block;
+      margin-bottom: -8px;
+      transition: color var(--t);
+      user-select: none;
+    }
+
+    /* The actual quote text */
+    .testimonial-text {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 2vw, 22px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.65;
+      color: var(--text);
+      flex: 1;
+    }
+
+    /* Attribution */
+    .testimonial-attribution {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      transition: border-color var(--t);
+    }
+
+    .testimonial-name {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .testimonial-role {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      font-style: italic;
+    }
+
+    /* Optional: project reference */
+    .testimonial-project {
+      font-size: 8.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── Featured testimonial — spans full width ── */
+    .testimonial-card.featured {
+      grid-column: 1 / -1;
+      padding: 52px 44px;
+    }
+
+    .testimonial-card.featured .testimonial-text {
+      font-size: clamp(18px, 2.8vw, 32px);
+      max-width: 760px;
+    }
+
+    /* ── CTA at the bottom ── */
+    .testimonials-cta {
+      padding: 52px 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+
+      /* Scroll reveal */
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .testimonials-cta.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .cta-text {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 2.5vw, 26px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text);
+    }
+
+    .cta-btn {
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--text);
+      border: 1px solid var(--text);
+      padding: 12px 28px;
+      cursor: none;
+      text-decoration: none;
+      display: inline-block;
+      transition: background var(--t-fast), color var(--t-fast);
+      flex-shrink: 0;
+    }
+
+    .cta-btn:hover {
+      background: transparent;
+      color: var(--text);
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .testimonials-header  { padding: 40px 16px 24px; }
+      .testimonials-grid    { grid-template-columns: 1fr; }
+      .testimonial-card     { padding: 32px 20px; }
+      .testimonial-card.featured { padding: 36px 20px; }
+      .testimonials-cta     { padding: 36px 16px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body class="page-testimonials">
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Background animated shapes -->
+  <div class="bg-shapes" aria-hidden="true">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <div id="pt" data-label=""></div>
+
+  <div class="cursor"></div>
+  <div class="cursor-dot"></div>
+
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">◐</button>
+
+  <nav class="nav">
+    <div class="nav-col">
+      <span class="nav-label">Independent Photographer <span class="available"><span class="available-dot"></span>Available</span></span>
+      <span class="nav-sub">&amp; Visual Artist</span>
+    </div>
+    <div class="nav-col">
+      <span class="nav-label">Location:</span>
+      <span class="nav-sub">Abuja, Nigeria (<span class="live-time">--:-- --</span>)</span>
+    </div>
+    <div class="nav-col">
+      <span class="nav-label">Navigation:</span>
+      <div class="nav-items">
+        <a class="nav-link" data-href="index.html"    data-label="Home"     href="#">Home</a>
+        <a class="nav-link" data-href="info.html"     data-label="Info"     href="#">Info</a>
+        <a class="nav-link" data-href="work.html"     data-label="Work"     href="#">Work</a>
+        <a class="nav-link" data-href="archive.html"  data-label="Archive"  href="#">Archive</a>
+        <a class="nav-link" data-href="upcoming.html" data-label="Upcoming" href="#">Upcoming</a>
+        <a class="nav-link" data-href="notes.html"    data-label="Notes"    href="#">Notes</a>
+        <a class="nav-link active"                    href="testimonials.html">Kind Words</a>
+        <a class="nav-link" data-href="contact.html"  data-label="Contact"  href="#">Contact</a>
+        <a class="nav-link" data-href="prints.html"       data-label="Prints"       href="#">Prints</a>
+      </div>
+    </div>
+    <div class="nav-col">
+      <span class="nav-label">Let's connect:</span>
+      <div class="nav-items">
+        <a class="nav-link" href="https://instagram.com/toyosi.i_" target="_blank">Instagram</a>
+        <a class="nav-link" href="https://cosmos.so/toyosi"         target="_blank">Cosmos</a>
+      </div>
+    </div>
+      <!-- Hamburger button — only visible on mobile (hidden on desktop via CSS) -->
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!--
+    MOBILE MENU DRAWER
+    Slides down on mobile when hamburger is tapped.
+    EDIT: Update links here if you add or rename pages.
+  -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-menu-section">
+      <span class="mobile-menu-label">Navigate</span>
+      <nav class="mobile-menu-links">
+        <a class="mobile-menu-link" data-href="index.html" data-label="Home" href="#">Home</a>
+        <a class="mobile-menu-link" data-href="work.html" data-label="Work" href="#">Work</a>
+        <a class="mobile-menu-link" data-href="info.html" data-label="Info" href="#">Info</a>
+        <a class="mobile-menu-link" data-href="archive.html" data-label="Archive" href="#">Archive</a>
+        <a class="mobile-menu-link" data-href="upcoming.html" data-label="Upcoming" href="#">Upcoming</a>
+        <a class="mobile-menu-link" data-href="prints.html" data-label="Prints" href="#">Prints</a>
+        <a class="mobile-menu-link" data-href="notes.html" data-label="Notes" href="#">Notes</a>
+        <a class="mobile-menu-link active" href="testimonials.html">Kind Words</a>
+        <a class="mobile-menu-link" data-href="contact.html" data-label="Contact" href="#">Contact</a>
+      </nav>
+    </div>
+    <div class="mobile-menu-section">
+      <span class="mobile-menu-label">Connect</span>
+      <div class="mobile-menu-socials">
+        <!-- EDIT: Update your social URLs -->
+        <a class="mobile-menu-social" href="https://instagram.com/toyosi.i_" target="_blank">Instagram ↗</a>
+        <a class="mobile-menu-social" href="https://cosmos.so/toyosi" target="_blank">Cosmos ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="testimonials-page">
+
+    <header class="testimonials-header">
+      <span class="testimonials-eyebrow">From people I've worked with</span>
+      <h1 class="testimonials-title">Kind Words</h1>
+    </header>
+
+    <div class="slider-controls">
+      <button id="testPrev" class="slider-btn">←</button>
+      <button id="testNext" class="slider-btn">→</button>
+    </div>
+
+    <div class="testimonials-slider">
+      <div class="testimonials-grid" id="testimonialsGrid">
+      <!-- ADMIN_TESTIMONIALS_START -->
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">Every shoot with Toyosi feels like its own experience- sometimes structured, but always intentional. His eye for detail and unique angles turns moments into art, and even without seeing every final shot, the experience alone always feels complete.</p>
+        <div class="testimonial-attribution">
+          <span class="testimonial-name">Immanuel Cupid</span>
+          <span class="testimonial-role">Editorial subject, Frontiers: A Visual Narrative</span>
+          
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">Toyosi really did an amazing job with my birthday photoshoot. The pictures came out so beautifully and perfectly captured the vibe of the day with a lot of creativity. I'm honestly really impressed with his skill and professionalism. He is definitely someone i would recommend anytime.</p>
+        <div class="testimonial-attribution">
+          <span class="testimonial-name">Afuye Faith</span>
+          <span class="testimonial-role">Portrait, Birthday commission</span>
+          
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">His consistency and dedication shows in every outreach he shows up for, and it never goes unnoticed. His photos consistently capture moments in a powerful, beautiful way. He's truly valued on the team, with everyone always looking forward to working with him again.</p>
+        <div class="testimonial-attribution">
+          <span class="testimonial-name">Yakubu Muhammed Nazir</span>
+          <span class="testimonial-role">Director, THAI</span>
+          
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">The first time i had a shoot with him, we barely knew eachother, and i was still quite new to the whole experience. Despite that, he made everything feel comfortable and easy. He was patient, friendly, and professional throughout the session. The pictures turned out really nice, and i genuinely enjoyed the experience. I'd definitely recommend him to anyone looking for a great photographer.</p>
+        <div class="testimonial-attribution">
+          <span class="testimonial-name">Ubaidah Suleiman</span>
+          <span class="testimonial-role">Muse</span>
+          
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">Working with him feels like working with someone who genuinely cares about your experience. He has such a relaxed, comfortable energy and is very easy to talk to, which helps you loosen up naturally. He listens, understands your ideas, and brings them to life beautifully. He just gets it without you having to explain too much.</p>
+        <div class="testimonial-attribution">
+          <span class="testimonial-name">NotNenye</span>
+          <span class="testimonial-role">Video editor/ Model, Abuja</span>
+          
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">I've worked with dozens of photographers. Omotoyosi is one of the few who makes the subject of the photograph feel like a collaborator, not a subject.</p>
+        <div class="testimonial-attribution">
+          <span class="testimonial-name">Dr. Ngozi Amaechi</span>
+          <span class="testimonial-role">Academic, Portrait commission</span>
+          
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">Working with Toyosi was just easy. He knows exactly what he is doing without making it feel stiff. He pays attention to small details you wouldn't even think matter, but they end up making a big difference in the final result. I'd work with him again without thinking twice</p>
+        <div class="testimonial-attribution">
+          <span class="testimonial-name">Mbah Donald</span>
+          <span class="testimonial-role">Model, Abuja</span>
+          
+        </div>
+      </div>
+      <div class="testimonial-card featured">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">My shoot with Toyosi is always very comfortable, he practically allows me to do my thing and be human, not a mannequin for poses, while being professional and still being your buddy...</p>
+        <div class="testimonial-attribution">
+          <span class="testimonial-name">Gbadebo Grace</span>
+          <span class="testimonial-role">Model, Abuja</span>
+          <span class="testimonial-project">Fẹ́yì</span>
+        </div>
+      </div><!-- ADMIN_TESTIMONIALS_END -->
+      <!--
+        EDIT: Copy a .testimonial-card block above and paste here
+        to add more testimonials.
+      -->
+
+    </div>
+    </div>
+
+    <!-- CTA section at the bottom -->
+    <div class="testimonials-cta" id="testimonialsCta">
+      <p class="cta-text">
+        Want to be here? Let's work together.
+      </p>
+      <!--
+        EDIT: Update href with your contact page or email
+      -->
+      <a
+        class="cta-btn"
+        data-href="contact.html"
+        data-label="Contact"
+        href="#"
+      >
+        Get in touch
+      </a>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    /* ============================================================
+       TESTIMONIALS PAGE — slider
+    ============================================================ */
+
+    const grid = document.getElementById('testimonialsGrid');
+    const cards = Array.from(grid.querySelectorAll('.testimonial-card'));
+    let current = 0;
+
+    const prevBtn = document.getElementById('testPrev');
+    const nextBtn = document.getElementById('testNext');
+
+    function showSlide(index) {
+      current = Math.max(0, Math.min(index, cards.length - 1));
+      grid.style.transform = `translateX(-${current * 100}%)`;
+      prevBtn.classList.toggle('disabled', current === 0);
+      nextBtn.classList.toggle('disabled', current === cards.length - 1);
+    }
+
+    prevBtn.addEventListener('click', () => showSlide(current - 1));
+    nextBtn.addEventListener('click', () => showSlide(current + 1));
+
+    // Auto advance every 5 seconds
+    setInterval(() => {
+      if (current < cards.length - 1) {
+        showSlide(current + 1);
+      } else {
+        showSlide(0);
+      }
+    }, 5000);
+
+    // Reveal on load
+    cards.forEach((card, i) => {
+      setTimeout(() => card.classList.add('visible'), i * 100);
+    });
+
+  </script>
+</body>
+</html>
