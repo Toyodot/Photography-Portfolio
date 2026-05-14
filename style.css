@@ -74,7 +74,7 @@
   --space-4xl:  96px;
 
   /* Layout */
-  --nav-h:         64px;
+  --nav-h:         80px;
   --content-max:   1400px;
   --radius-sm:     4px;
   --radius-md:     8px;
@@ -597,7 +597,7 @@ ul, ol       { list-style: none; }
 }
 
 .nav-label {
-  font-size: 8px; 
+  font-size: 11px; 
   letter-spacing: 0.08em; 
   text-transform: uppercase;
   color: var(--text-subtle); 
@@ -618,7 +618,7 @@ ul, ol       { list-style: none; }
 }
 
 .nav-link {
-  font-size: 10px; 
+  font-size: 12px; 
   font-weight: 500;
   color: var(--text-muted);
   position: relative; 
@@ -830,6 +830,8 @@ ul, ol       { list-style: none; }
 }
 
 .landing-cta-link.secondary:hover {
+  background: var(--text);
+  color: var(--bg);
   border-color: var(--text);
 }
 
@@ -848,6 +850,12 @@ ul, ol       { list-style: none; }
   background: transparent;
   color: rgba(236,234,227,0.7);
   border-color: rgba(236,234,227,0.2);
+}
+
+.bg-active .landing-cta-link.secondary:hover {
+  background: rgba(236,234,227,0.9);
+  color: var(--text);
+  border-color: rgba(236,234,227,0.9);
 }
 
 /* Scroll hint */
@@ -895,7 +903,7 @@ ul, ol       { list-style: none; }
 }
 
 .hero-bio {
-  font-size: clamp(10px, 0.95vw, 13px);
+  font-size: clamp(14px, 1.1vw, 16px);
   font-weight: 400;
   letter-spacing: 0.04em;
   color: var(--text-muted);
@@ -1955,6 +1963,51 @@ ul, ol       { list-style: none; }
    ============================================================ */
 
 /* ============================================================
+   TABLET — 600px to 768px
+   Optimized layout for iPads and large phones
+   ============================================================ */
+
+@media (max-width: 768px) and (min-width: 600px) {
+  
+  /* Text sizing for tablet */
+  .hero-bio { font-size: clamp(13px, 1vw, 15px); }
+  .landing-cta-link { font-size: 9px; }
+  .nav-label { font-size: 10px; }
+  .nav-link { font-size: 11px; }
+  
+  /* Navigation optimization */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    padding: 14px 20px;
+  }
+
+  .nav-col { display: none; }
+  .nav-col:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .nav-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 38px;
+    height: 38px;
+    padding: 8px;
+    background: none;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+}
+
+/* ============================================================
    MOBILE — 768px and below
    All desktop styles are completely untouched.
    Every rule here is additive / overriding only on small screens.
@@ -1994,6 +2047,10 @@ ul, ol       { list-style: none; }
     flex-direction: column;
     gap: 2px;
   }
+
+  /* Increase nav text sizes for mobile readability */
+  .nav-label { font-size: 10px; }
+  .nav-sub { font-size: 11px; }
 
   /* Hamburger button — only visible on mobile */
   .nav-hamburger {
@@ -2108,7 +2165,7 @@ ul, ol       { list-style: none; }
   .landing-eyebrow { font-size: 7px; margin-bottom: 14px; }
   .landing-divider { margin: 14px 0 18px; }
   .hero-bio-wrap   { max-width: 100%; }
-  .hero-bio        { font-size: 10px; letter-spacing: 0.04em; }
+  .hero-bio        { font-size: 11px; letter-spacing: 0.04em; }
   .landing-footer-row {
     flex-direction: column;
     align-items: flex-start;
