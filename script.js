@@ -483,7 +483,7 @@ function navigateTo(url, label) {
   ptEl.setAttribute('data-label', label || '');
   ptEl.classList.remove('pt-reveal');
   ptEl.classList.add('pt-cover');
-  setTimeout(() => window.location.href = url, 680);
+  setTimeout(() => window.location.href = url, 400);
 }
 
 // Attach to all elements with data-href
@@ -821,8 +821,59 @@ if (landingBg && landingImg && CFG.SHOW_BG_IMAGE) {
   }
 }
 
-// ── 3D portrait tilt ──────────────────────────────────────
-// EDIT: MAX_TILT = degrees of maximum tilt
+/* ============================================================
+   IMAGE LOADING PROGRESS BAR
+   Shows at top of page while images load on work/shoot pages
+   ============================================================ */
+
+// Only show progress bar on work and shoot pages (not landing/splash)
+const isWorkOrShootPage = document.querySelector('.work-index-page, .page-shoot');
+
+if (isWorkOrShootPage) {
+  const progressBar = document.createElement('div');
+  progressBar.className = 'progress-bar';
+  progressBar.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(progressBar);
+
+  function updateImageProgress() {
+    const images = document.querySelectorAll('img:not(.splash img)');
+    if (images.length === 0) {
+      progressBar.style.display = 'none';
+      return;
+    }
+
+    let loaded = 0;
+    images.forEach(img => {
+      if (img.complete && img.naturalWidth > 0) {
+        loaded++;
+      }
+    });
+
+    const progress = (loaded / images.length) * 100;
+    progressBar.style.width = progress + '%';
+
+    if (progress === 100) {
+      // Fade out after all images loaded
+      setTimeout(() => {
+        progressBar.classList.add('done');
+      }, 300);
+    } else {
+      progressBar.classList.remove('done');
+    }
+  }
+
+  // Track image loads
+  document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('load', updateImageProgress);
+    img.addEventListener('error', updateImageProgress);
+  });
+
+  // Update on page load
+  window.addEventListener('load', updateImageProgress);
+
+  // Periodic check during lazy loading
+  setInterval(updateImageProgress, 500);
+}
 
 const MAX_TILT = 8;
 const heroCard = document.querySelector('.hero-card');
