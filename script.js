@@ -433,15 +433,42 @@ const ptEl = document.getElementById('pt');
 
 // Enter animation: panel tears off upward on page load
 if (ptEl && CFG.PAGE_TRANSITIONS) {
-  ptEl.classList.add('pt-cover');
+  // Reset state on page load (handles back button)
+  ptEl.classList.remove('pt-cover');
+  ptEl.classList.remove('pt-reveal');
+  
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      ptEl.classList.remove('pt-cover');
-      ptEl.classList.add('pt-reveal');
+      ptEl.classList.add('pt-cover');
+      requestAnimationFrame(() => {
+        ptEl.classList.remove('pt-cover');
+        ptEl.classList.add('pt-reveal');
+      });
     });
   });
-  setTimeout(() => ptEl.classList.remove('pt-reveal'), 900);
+  setTimeout(() => {
+    ptEl.classList.remove('pt-reveal');
+  }, 900);
 }
+
+// Handle browser back/forward button navigation
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted && ptEl && CFG.PAGE_TRANSITIONS) {
+    // Page was restored from cache (back button)
+    ptEl.classList.remove('pt-cover');
+    ptEl.classList.remove('pt-reveal');
+    requestAnimationFrame(() => {
+      ptEl.classList.add('pt-cover');
+      requestAnimationFrame(() => {
+        ptEl.classList.remove('pt-cover');
+        ptEl.classList.add('pt-reveal');
+      });
+    });
+    setTimeout(() => {
+      ptEl.classList.remove('pt-reveal');
+    }, 900);
+  }
+});
 
 /**
  * Navigate to a new page with the wipe transition.
@@ -762,11 +789,35 @@ if (landingBg && landingImg && CFG.SHOW_BG_IMAGE) {
     document.querySelector('.landing')?.classList.add('bg-active');
     document.querySelector('.nav')?.classList.add('nav-transparent');
   };
+  
+  // Check if image is already cached/loaded
   if (landingImg.complete && landingImg.naturalWidth > 0) {
-    activate();
+    // Small delay to ensure styles are applied
+    setTimeout(activate, 100);
   } else {
-    landingImg.addEventListener('load',  activate);
-    landingImg.addEventListener('error', () => {});
+    // Setup load listener
+    const loadHandler = () => {
+      activate();
+      landingImg.removeEventListener('load', loadHandler);
+      landingImg.removeEventListener('error', errorHandler);
+    };
+    
+    const errorHandler = () => {
+      // Image failed to load — hide the container gracefully
+      landingImg.removeEventListener('load', loadHandler);
+      landingImg.removeEventListener('error', errorHandler);
+    };
+    
+    landingImg.addEventListener('load', loadHandler);
+    landingImg.addEventListener('error', errorHandler);
+    
+    // Fallback timeout (5 seconds) — if image hasn't loaded by then, proceed anyway
+    setTimeout(() => {
+      if (!landingBg.classList.contains('loaded')) {
+        landingImg.removeEventListener('load', loadHandler);
+        landingImg.removeEventListener('error', errorHandler);
+      }
+    }, 5000);
   }
 }
 
@@ -893,6 +944,28 @@ if (workList) {
     const cover    = card.getAttribute('data-cover') || coverImg?.src || '';
     const title    = card.querySelector('.wheel-label')?.textContent || '';
     const id       = card.getAttribute('data-title') || '';
+
+    // Lazy load cover images
+    if (coverImg && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.removeAttribute('data-src');
+            }
+            observer.unobserve(img);
+          }
+        });
+      }, { rootMargin: '50px' });
+      
+      if (coverImg.src) {
+        coverImg.dataset.src = coverImg.src;
+        coverImg.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600"%3E%3Crect fill="%23f0f0f0" width="400" height="600"/%3E%3C/svg%3E';
+      }
+      observer.observe(coverImg);
+    }
 
     card.addEventListener('mouseenter', () => {
       if (!workPreview || !workPreviewImg) return;
