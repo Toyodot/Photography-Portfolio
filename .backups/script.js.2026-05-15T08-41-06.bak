@@ -82,7 +82,6 @@ const SHOOT_DATA = {
     date:     '19-10-2024',
     notes:    'Natural light only. Late afternoon golden hour. Minimal direction — mostly observed.',
     cover:    'assets/images/Agbara/cover.jpg',
-    tags:     ['Portraiture', 'Editorial'],
     images: [
       'assets/images/Agbara/01.jpg',
       'assets/images/Agbara/02.jpg',
@@ -105,7 +104,6 @@ const SHOOT_DATA = {
     date:     '14-02-2025',
     notes:    'Outreach coverage. Documentary approach. Focused on real moments, no staging.',
     cover:    'assets/images/shoot-placeholder.jpg',
-    tags:     ['Outreach', 'Documentary'],
     images: [
       'assets/images/fts2025/01.jpg',
       'assets/images/fts2025/02.jpg',
@@ -157,9 +155,12 @@ const SHOOT_DATA = {
     models:   'Adebisi Victor',
     date:     '19-07-2025',
     notes:    'Behind the scenes. Documentary approach. Shot with intent. Focused on process, not performance.',
-    cover:    'assets/images/ade-ibile/cover.jpg',
-    tags:     ['Cultural', 'Portraiture'],
+    cover:    'assets/images/shoot-placeholder.jpg',
     images: [
+      'assets/images/editorial-i/01.jpg',
+      'assets/images/editorial-i/02.jpg',
+      'assets/images/editorial-i/03.jpg',
+      'assets/images/editorial-i/04.jpg',
       'assets/images/ade-ibile/01.jpg',
       'assets/images/ade-ibile/02.jpg',
       'assets/images/ade-ibile/03.jpg',
@@ -178,7 +179,6 @@ const SHOOT_DATA = {
     models:   'Gbadebo Grace',
     date:     '05-04-2025',
     notes:    'Portrait session. Outdoors, natural light, no staging. Focused on expression, form, and the movement of the bubu gown in real space',
-    tags:     ['Portraiture', 'Fashion'],
     cover:    'assets/images/shoot-placeholder.jpg',
     images: [
       'assets/images/feyi/01.jpg',
@@ -206,7 +206,6 @@ const SHOOT_DATA = {
     models:   'Victor Adebisi',
     date:     '09-07-2025',
     notes:    'Between setups—straightening the suit, watching the light shift, waiting for it to click. Nothing loud, just small moments lining up before the frame lands.',
-    tags:     ['Editorial', 'Portraiture'],
     cover:    'assets/images/shoot-placeholder.jpg',
     images: [
       'assets/images/mfy/01.jpg',
@@ -231,7 +230,6 @@ const SHOOT_DATA = {
     models:   'Theresa',
     date:     '2022',
     notes:    'Shot in direct daylight, no diffusion—just working with the sun as it moved. Minimal direction, mostly spacing, angles, and timing the light. Kept it simple so the frame could breathe.',
-    tags:     ['Portraiture', 'Fine Art'],
     cover:    'assets/images/shoot-placeholder.jpg',
     images: [
       'assets/images/repose/01.jpg',
@@ -255,7 +253,6 @@ const SHOOT_DATA = {
     models:   'Joseph Chinonso',
     date:     '16 November, 2024',
     notes:    'Studio portraiture | Editorial study | Controlled lighting and compositional exploration of form and presence in male portraiture. BTS: Single-light setup, teal cyclorama backdrop. Nikon D3200, 50mm. Multiple pose variations shot in one session, edited for tonal cohesion and shadow preservation.',
-    tags:     ['Minimalist', 'Portraiture'],
     cover:    'assets/images/shoot-placeholder.jpg',
     images: [
       'assets/images/bare/01.jpeg',
@@ -276,7 +273,6 @@ const SHOOT_DATA = {
     models:   'Olisaemeka Sydney, Victor Adebisi',
     date:     '19/10/2024',
     notes:    'Natural light location shoot. Nikon D3200, 35mm. Color-graded for textile detail and environmental richness.',
-    tags:     ['Family', 'Editorial'],
     cover:    'assets/images/kinship/cover.jpg',
     images: [
       'assets/images/kinship/01.jpg',
@@ -297,7 +293,6 @@ const SHOOT_DATA = {
     models:   '-',
     date:     '20-09-2024',
     notes:    'Quietude | A study in anonymity and introspection. Casual portraiture exploring the absence of face as narrative—the subject reduced to presence, clothing, and stance within natural landscape. A meditation on stillness and the unseen.',
-    tags:     ['Conceptual', 'Portraiture'],
     cover:    'assets/images/Quietude/cover.jpg',
     images: [
       'assets/images/Quietude/01.jpg',
@@ -315,7 +310,6 @@ const SHOOT_DATA = {
     models:   '-',
     date:     '',
     notes:    'Natural light location shoot. Canon EOS R5, 35mm. Color-graded to emphasize fabric depth and saturation while maintaining environmental clarity.',
-    tags:     ['Editorial', 'Fine Art'],
     cover:    'assets/images/inception/cover.jpg',
     images: [
       'assets/images/inception/01.jpg',
@@ -343,7 +337,6 @@ const SHOOT_DATA = {
     models:   '-',
     date:     '14-02-2023',
     notes:    'Available light, location work. Nikon D3200, 50mm. Shot in black and white to emphasize human presence and connection. Minimal processing—preserved grain and contrast to maintain documentary integrity.',
-    tags:     ['Outreach', 'Documentary'],
     cover:    'assets/images/fts-3.0/cover.jpg',
     images: [
       'assets/images/fts-3.0/01.jpg',
@@ -367,7 +360,6 @@ const SHOOT_DATA = {
     models:   'Afuye Faith',
     date:     '27-07-24',
     notes:    'Natural light location shoot. Nikon D3200, 50mm. Color-graded for subtle desaturation and tonal restraint to emphasize subject presence over environment.',
-    tags:     ['Conceptual', 'Editorial'],
     cover:    'assets/images/QA/cover.jpg',
     images: [
       'assets/images/QA/01.jpg',
@@ -1004,23 +996,6 @@ if (workList) {
     const title    = card.querySelector('.wheel-label')?.textContent || '';
     const id       = card.getAttribute('data-title') || '';
 
-    // ── ENHANCED: Populate shot count badge & tags from SHOOT_DATA ──
-    const shootData = SHOOT_DATA[id];
-    if (shootData) {
-      // Set shot count badge
-      const badge = card.querySelector('.wheel-badge');
-      if (badge) {
-        const shotCount = shootData.images.length;
-        badge.textContent = `${shotCount} shot${shotCount !== 1 ? 's' : ''}`;
-      }
-      
-      // Set project tags (e.g., "Portraiture • Editorial")
-      const tagsEl = card.querySelector('.wheel-tags');
-      if (tagsEl && shootData.tags && shootData.tags.length > 0) {
-        tagsEl.textContent = shootData.tags.join(' • ');
-      }
-    }
-
     // Lazy load cover images
     if (coverImg && 'IntersectionObserver' in window) {
       const observer = new IntersectionObserver((entries) => {
@@ -1394,41 +1369,3 @@ lb?.addEventListener('touchend', e => {
   const diff = lbTouchX - e.changedTouches[0].clientX;
   if (Math.abs(diff) > 45) lbGo(diff > 0 ? lbIndex + 1 : lbIndex - 1);
 }, { passive: true });
-
-
-/* ============================================================
-   18. AUDIO PLAYER TOGGLE
-   Click button to play/pause ambient audio.
-   Remembers user preference in localStorage.
-   ============================================================ */
-
-const audioToggle = document.getElementById('audioToggle');
-const ambientAudio = document.getElementById('ambientAudio');
-
-if (audioToggle && ambientAudio) {
-  // Check if user had audio playing before (remember preference)
-  const wasPlaying = localStorage.getItem('omotoyosi-audio') === 'true';
-  
-  if (wasPlaying) {
-    // Attempt autoplay (browsers may block this)
-    ambientAudio.play().catch(e => console.log('Audio autoplay blocked by browser'));
-    audioToggle.classList.add('playing');
-  }
-
-  // Toggle play/pause on button click
-  audioToggle.addEventListener('click', (e) => {
-    e.stopPropagation(); // Prevent nav interaction
-    
-    if (ambientAudio.paused) {
-      // Play audio
-      ambientAudio.play().catch(e => console.log('Audio play failed:', e));
-      audioToggle.classList.add('playing');
-      localStorage.setItem('omotoyosi-audio', 'true');
-    } else {
-      // Pause audio
-      ambientAudio.pause();
-      audioToggle.classList.remove('playing');
-      localStorage.setItem('omotoyosi-audio', 'false');
-    }
-  });
-}

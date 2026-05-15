@@ -1144,6 +1144,45 @@ ul, ol       { list-style: none; }
   margin-top: 5px;
 }
 
+/* ── ENHANCED: Metadata badges & tags ─────────────────────── */
+
+/* Shot count badge — appears on hover top-right */
+.wheel-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 6px 10px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
+.wheel-card:hover .wheel-badge {
+  opacity: 1;
+}
+
+/* Project tags — displayed below title on hover */
+.wheel-tags {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  margin-top: 6px;
+  min-height: 12px;
+  transition: color 0.35s ease;
+}
+
+.wheel-card:hover .wheel-tags {
+  color: var(--text-muted);
+}
+
 /* Arrow navigation buttons (optional — position within .work-index-page) */
 .wheel-arrow {
   position: absolute;

@@ -109,138 +109,100 @@
       </div>
       <div class="work-index-header-right">
         <!-- EDIT: Update shoot count and year range as you add shoots -->
-        <span class="work-index-count">12 Projects</span>
-        <span class="work-index-year">2022 — 2025</span>
+        <span class="work-index-count">08 Projects</span>
+        <span class="work-index-year">2022 — 2024</span>
       </div>
     </header>
 
-    <!-- Shoot rows — ENHANCED with metadata -->
+    <!-- Shoot rows -->
     <div class="work-list" id="workList">
 
       <!-- ADMIN_SHOOTS_START -->
         <div class="wheel-card" data-title="Agbara">
           <div class="wheel-thumb">
             <img src="assets/images/Agbara/cover.jpg" alt="Agbára" onerror="this.style.display='none'" />
-            <!-- Shot count badge — populated by JS -->
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Agbára</span>
-          <!-- Tags — populated by JS from SHOOT_DATA -->
-          <span class="wheel-tags"></span>
-          <span class="wheel-year">2024</span>
+          <span class="wheel-year">19-10-2024</span>
         </div>
-
         <div class="wheel-card" data-title="fts2025">
           <div class="wheel-thumb">
             <img src="assets/images/fts2025/cover.jpg" alt="Feed The Streets 2025" onerror="this.style.display='none'" />
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Feed The Streets 2025</span>
-          <span class="wheel-tags"></span>
-          <span class="wheel-year">2025</span>
+          <span class="wheel-year">14-02-2025</span>
         </div>
-
         <div class="wheel-card" data-title="ade-ibile">
           <div class="wheel-thumb">
             <img src="assets/images/ade-ibile/cover.jpg" alt="Adé Ìbílẹ̀" onerror="this.style.display='none'" />
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Adé Ìbílẹ̀</span>
-          <span class="wheel-tags"></span>
-          <span class="wheel-year">2025</span>
+          <span class="wheel-year">19-07-2025</span>
         </div>
-
         <div class="wheel-card" data-title="feyi">
           <div class="wheel-thumb">
             <img src="assets/images/feyi/cover.jpg" alt="Fẹ́yì" onerror="this.style.display='none'" />
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Fẹ́yì</span>
-          <span class="wheel-tags"></span>
-          <span class="wheel-year">2025</span>
+          <span class="wheel-year">05-04-2025</span>
         </div>
-
         <div class="wheel-card" data-title="mfy">
           <div class="wheel-thumb">
             <img src="assets/images/mfy/cover.jpg" alt="Memo From Yesterday" onerror="this.style.display='none'" />
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Memo From Yesterday</span>
-          <span class="wheel-tags"></span>
-          <span class="wheel-year">2025</span>
+          <span class="wheel-year">09-07-2025</span>
         </div>
-
         <div class="wheel-card" data-title="repose">
           <div class="wheel-thumb">
             <img src="assets/images/repose/cover.jpg" alt="Repose" onerror="this.style.display='none'" />
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Repose</span>
-          <span class="wheel-tags"></span>
           <span class="wheel-year">2022</span>
         </div>
-
         <div class="wheel-card" data-title="bare">
           <div class="wheel-thumb">
             <img src="assets/images/bare/cover.jpeg" alt="Bare" onerror="this.style.display='none'" />
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Bare</span>
-          <span class="wheel-tags"></span>
-          <span class="wheel-year">2024</span>
+          <span class="wheel-year">16 November, 2024</span>
         </div>
-
         <div class="wheel-card" data-title="kinship">
           <div class="wheel-thumb">
             <img src="assets/images/kinship/cover.jpg" alt="Kinship" onerror="this.style.display='none'" />
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Kinship</span>
-          <span class="wheel-tags"></span>
-          <span class="wheel-year">2024</span>
+          <span class="wheel-year">19/10/2024</span>
         </div>
-
         <div class="wheel-card" data-title="Quietude">
           <div class="wheel-thumb">
             <img src="assets/images/Quietude/cover.jpg" alt="Quietude" onerror="this.style.display='none'" />
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Quietude</span>
-          <span class="wheel-tags"></span>
           <span class="wheel-year">2024</span>
         </div>
-
         <div class="wheel-card" data-title="inception">
           <div class="wheel-thumb">
             <img src="assets/images/inception/cover.jpg" alt="Inception" onerror="this.style.display='none'" />
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Inception</span>
-          <span class="wheel-tags"></span>
           <span class="wheel-year">2023</span>
         </div>
-
         <div class="wheel-card" data-title="fts-3.0">
           <div class="wheel-thumb">
             <img src="assets/images/fts-3.0/cover.jpg" alt="Feed The Streets 3.0- THAI" onerror="this.style.display='none'" />
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Feed The Streets 3.0- THAI</span>
-          <span class="wheel-tags"></span>
           <span class="wheel-year">2023</span>
         </div>
-
         <div class="wheel-card" data-title="QA">
           <div class="wheel-thumb">
             <img src="assets/images/QA/cover.jpg" alt="Quiet Authority" onerror="this.style.display='none'" />
-            <span class="wheel-badge"></span>
           </div>
           <span class="wheel-label">Quiet Authority</span>
-          <span class="wheel-tags"></span>
           <span class="wheel-year">2024</span>
-        </div>
-
-      <!-- ADMIN_SHOOTS_END -->
+        </div><!-- ADMIN_SHOOTS_END -->
+      <!-- EDIT: Copy a .work-row block above to add more shoots -->
 
     </div>
 
