@@ -229,7 +229,7 @@ const SHOOT_DATA = {
     desc:     'Composed stillness against a rough backdrop—color doing the heavy lifting, posture keeping it grounded. It feels deliberate without trying too hard, somewhere between control and ease.',
     location: 'WTC, Abuja',
     models:   'Theresa',
-    date:     '2022',
+    date:     '2025',
     notes:    'Shot in direct daylight, no diffusion—just working with the sun as it moved. Minimal direction, mostly spacing, angles, and timing the light. Kept it simple so the frame could breathe.',
     tags:     ['Portraiture', 'Fine Art'],
     cover:    'assets/images/shoot-placeholder.jpg',
