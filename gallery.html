@@ -240,6 +240,39 @@
 
     .gallery-lock-btn:hover { color: var(--text); }
 
+    /* Per-image download button */
+    .gallery-dl-btn {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.55);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 13px;
+      text-decoration: none;
+      opacity: 0;
+      transition: opacity 0.25s ease, background 0.2s ease;
+      border-radius: 2px;
+      cursor: none;
+      backdrop-filter: blur(4px);
+    }
+
+    .gallery-cell:hover .gallery-dl-btn { opacity: 1; }
+    .gallery-dl-btn:hover { background: rgba(0, 0, 0, 0.8); }
+
+    /* Loading state for lock screen */
+    .lock-loading {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-top: 20px;
+      min-height: 16px;
+    }
+
     /* ── Mobile ── */
     @media (max-width: 768px) {
       .gallery-grid { grid-template-columns: repeat(2, 1fr); }
@@ -437,54 +470,15 @@
   <script src="script.js"></script>
   <script>
     /* ============================================================
-       CLIENT GALLERY — password + image logic
-
-       TO SET UP THIS GALLERY FOR A CLIENT:
-       1. Set PASSWORD_HASH (see instructions in HTML above)
-       2. Set GALLERY_TITLE and GALLERY_META
-       3. Fill GALLERY_IMAGES with the client's image paths
-       4. Set DOWNLOAD_LINK to your Google Drive or similar folder
-       5. Send the client this file's URL and the plain-text password
+       CLIENT GALLERY — dynamic delivery system
+       Reads client data from clients.json via ?c=slug URL param.
+       No manual editing needed — managed through the admin panel.
     ============================================================ */
 
-    /* ────────────────────────────────────────────────────────────
-       EDIT THESE VALUES FOR EACH CLIENT:
-    ──────────────────────────────────────────────────────────── */
+    const GH_API       = 'https://api.github.com';
+    const CLIENT_SLUG  = new URLSearchParams(window.location.search).get('c');
 
-    // EDIT: Paste the SHA-256 hash of your chosen password here.
-    // See instructions in the HTML comments above for how to generate this.
-    // Default hash below is for the password: "demo123" — change it!
-    const PASSWORD_HASH = '4a7d1ed414474e4033ac29ccb8653d9b7e5a5b6e6e6e6e6e6e6e6e6e6e6e6e6';
-
-    // EDIT: Client or session name shown in the gallery header
-    const GALLERY_TITLE = 'Sarah & James — Wedding Session';
-
-    // EDIT: Subtitle shown under the title
-    const GALLERY_META  = 'March 2024 · 47 images · Ready for download';
-
-    // EDIT: Google Drive / Dropbox / WeTransfer link for full-res download
-    // Set to '#' or '' to hide the download button
-    const DOWNLOAD_LINK = '#';
-
-    // EDIT: Add all of the client's image paths here.
-    // These should be in a folder you've uploaded with the site.
-    // e.g. 'assets/images/clients/sarah-james/001.jpg'
-    const GALLERY_IMAGES = [
-      /* EDIT: Replace these with the client's actual image paths */
-      'assets/images/portraits/01.jpg',
-      'assets/images/portraits/02.jpg',
-      'assets/images/portraits/03.jpg',
-      'assets/images/portraits/04.jpg',
-      'assets/images/ipadabo/01.jpg',
-      'assets/images/ipadabo/02.jpg',
-      'assets/images/ipadabo/03.jpg',
-      'assets/images/ipadabo/04.jpg',
-      'assets/images/ipadabo/05.jpg',
-    ];
-
-    /* ────────────────────────────────────────────────────────────
-       PASSWORD CHECK LOGIC — no need to edit below this line
-    ──────────────────────────────────────────────────────────── */
+    let clientData     = null; // Populated after loadClient()
 
     const passwordInput = document.getElementById('passwordInput');
     const unlockBtn     = document.getElementById('unlockBtn');
@@ -493,116 +487,243 @@
     const galleryView   = document.getElementById('galleryView');
     const eyeToggle     = document.getElementById('eyeToggle');
 
-    // Toggle password visibility
+
+    /* ── Load client data ──────────────────────────────────── */
+
+    async function loadClient() {
+      if (!CLIENT_SLUG) {
+        showLockMessage('No gallery specified. Please use the link sent to you.', true);
+        return;
+      }
+
+      showLockMessage('Loading your gallery…');
+
+      try {
+        // Fetch clients.json relative to this page (works on GitHub Pages + local dev)
+        const res = await fetch('clients.json?_=' + Date.now());
+        if (!res.ok) throw new Error('Gallery data not found.');
+
+        const allClients = await res.json();
+        clientData = allClients.find(c => c.slug === CLIENT_SLUG);
+
+        if (!clientData) {
+          showLockMessage('Gallery not found. Please check your link.', true);
+          return;
+        }
+
+        // Update lock screen for this client
+        const lockTitle = document.querySelector('.lock-title');
+        const lockSub   = document.querySelector('.lock-sub');
+        if (lockTitle) lockTitle.textContent = clientData.name;
+        if (lockSub)   lockSub.textContent   = 'Enter your password to view your photos.';
+        showLockMessage(''); // Clear loading message
+
+        // Re-enable the input
+        passwordInput.disabled = false;
+        unlockBtn.disabled     = false;
+
+      } catch (err) {
+        showLockMessage('Unable to load gallery. Please try again.', true);
+      }
+    }
+
+    function showLockMessage(msg, isError = false) {
+      const el = document.getElementById('lockError');
+      if (el) {
+        el.textContent = msg;
+        el.style.color = isError ? '#c0392b' : 'var(--text-muted)';
+      }
+    }
+
+
+    /* ── Password ──────────────────────────────────────────── */
+
+    // Disable inputs until client data loads
+    passwordInput.disabled = true;
+    unlockBtn.disabled     = true;
+
     eyeToggle?.addEventListener('click', () => {
       const isHidden = passwordInput.type === 'password';
-      passwordInput.type   = isHidden ? 'text' : 'password';
+      passwordInput.type    = isHidden ? 'text' : 'password';
       eyeToggle.textContent = isHidden ? '◉' : '◎';
     });
 
-    // Hash the entered password using SubtleCrypto (built into all modern browsers)
     async function hashPassword(password) {
       const encoder = new TextEncoder();
       const data    = encoder.encode(password);
       const hash    = await crypto.subtle.digest('SHA-256', data);
-      // Convert to hex string
-      return [...new Uint8Array(hash)]
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
+      return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // Check password and unlock if correct
     async function attemptUnlock() {
-      const entered = passwordInput.value.trim();
+      if (!clientData) return;
 
-      if (!entered) {
-        lockError.textContent = 'Please enter a password.';
-        return;
-      }
+      const entered = passwordInput.value.trim();
+      if (!entered) { lockError.textContent = 'Please enter a password.'; return; }
 
       lockError.textContent = 'Checking…';
+      lockError.style.color = 'var(--text-muted)';
 
       try {
         const hash = await hashPassword(entered);
 
-        if (hash === PASSWORD_HASH) {
-          // Correct password — show gallery
+        if (hash === clientData.passwordHash) {
           unlockGallery();
         } else {
-          // Wrong password
           lockError.textContent = 'Incorrect password. Please try again.';
+          lockError.style.color = '#c0392b';
           passwordInput.value   = '';
           passwordInput.focus();
         }
       } catch (err) {
         lockError.textContent = 'Something went wrong. Please try again.';
+        lockError.style.color = '#c0392b';
       }
     }
 
-    // Button click and Enter key both trigger unlock attempt
     unlockBtn?.addEventListener('click', attemptUnlock);
     passwordInput?.addEventListener('keydown', e => {
       if (e.key === 'Enter') attemptUnlock();
     });
 
-    // Show the gallery
+
+    /* ── Unlock gallery ────────────────────────────────────── */
+
     function unlockGallery() {
-      // Hide lock screen, show gallery
       galleryLock.style.display = 'none';
       galleryView.classList.add('unlocked');
 
-      // Set gallery metadata
       const titleEl = document.getElementById('galleryTitle');
       const metaEl  = document.getElementById('galleryMeta');
       const navName = document.getElementById('galleryNavName');
 
-      if (titleEl)  titleEl.textContent  = GALLERY_TITLE;
-      if (metaEl)   metaEl.textContent   = GALLERY_META;
-      if (navName)  navName.textContent  = GALLERY_TITLE;
+      if (titleEl) titleEl.textContent = clientData.name;
+      if (metaEl)  metaEl.textContent  = clientData.meta || `${clientData.images.length} images`;
+      if (navName) navName.textContent = clientData.name;
 
-      // Set download link
       const downloadBtn = document.getElementById('downloadAllBtn');
       if (downloadBtn) {
-        if (DOWNLOAD_LINK && DOWNLOAD_LINK !== '#') {
-          downloadBtn.href = DOWNLOAD_LINK;
+        if (clientData.downloadAllLink && clientData.downloadAllLink !== '#') {
+          downloadBtn.href = clientData.downloadAllLink;
         } else {
           downloadBtn.style.display = 'none';
         }
       }
 
-      // Build image grid
       buildGallery();
     }
 
-    // Build the photo grid from GALLERY_IMAGES
+
+    /* ── Build image grid ──────────────────────────────────── */
+
     function buildGallery() {
       const grid = document.getElementById('galleryGrid');
-      if (!grid) return;
+      if (!grid || !clientData) return;
       grid.innerHTML = '';
 
-      GALLERY_IMAGES.forEach((src, i) => {
+      clientData.images.forEach((imgObj, i) => {
+        const url = typeof imgObj === 'string' ? imgObj : imgObj.url;
+
         const cell = document.createElement('div');
         cell.className = 'gallery-cell';
         cell.setAttribute('data-num', String(i + 1).padStart(2, '0'));
 
         const img   = document.createElement('img');
-        img.src     = src;
-        img.alt     = `${GALLERY_TITLE} — Image ${i + 1}`;
-        img.loading = 'lazy'; // Only load images as they scroll into view
+        img.src     = url;
+        img.alt     = `${clientData.name} — ${i + 1}`;
+        img.loading = 'lazy';
+
+        // Per-image download button
+        const dlBtn = document.createElement('a');
+        dlBtn.className  = 'gallery-dl-btn';
+        dlBtn.href       = url;
+        dlBtn.target     = '_blank';
+        dlBtn.rel        = 'noopener';
+        dlBtn.title      = `View image ${i + 1}`;
+        dlBtn.textContent = '↓';
+        dlBtn.addEventListener('click', () => trackDownload(i));
 
         cell.appendChild(img);
+        cell.appendChild(dlBtn);
         grid.appendChild(cell);
       });
     }
 
-    // Lock again button — clears the session and shows lock screen
+
+    /* ── Download tracking ─────────────────────────────────── */
+    /*
+      Tracking uses the GitHub token stored in localStorage by the admin panel.
+      If you (Toyosi) have the admin open in this browser, counts increment.
+      If a client views the gallery on their own device, gallery still works
+      perfectly — tracking just fails silently (no token available).
+    */
+
+    async function trackDownload(imageIndex) {
+      try {
+        const stored = localStorage.getItem('omotoyosi-admin-cfg');
+        if (!stored) return;
+        const cfg = JSON.parse(stored);
+        if (!cfg.token || !cfg.username || !cfg.repo || cfg.mode !== 'github') return;
+
+        const branch  = cfg.branch || 'main';
+        const headers = {
+          'Authorization': `token ${cfg.token}`,
+          'Accept':        'application/vnd.github.v3+json',
+          'Content-Type':  'application/json',
+        };
+
+        // Fetch current clients.json + SHA
+        const res = await fetch(
+          `${GH_API}/repos/${cfg.username}/${cfg.repo}/contents/clients.json?ref=${branch}`,
+          { headers }
+        );
+        if (!res.ok) return;
+
+        const fileData   = await res.json();
+        const allClients = JSON.parse(atob(fileData.content.replace(/\n/g, '')));
+
+        const clientIndex = allClients.findIndex(c => c.slug === CLIENT_SLUG);
+        if (clientIndex === -1) return;
+
+        const imgEntry = allClients[clientIndex].images[imageIndex];
+        if (imgEntry && typeof imgEntry === 'object') {
+          imgEntry.downloads = (imgEntry.downloads || 0) + 1;
+        }
+
+        // Write back
+        await fetch(
+          `${GH_API}/repos/${cfg.username}/${cfg.repo}/contents/clients.json`,
+          {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({
+              message: `Track download: ${CLIENT_SLUG} image ${imageIndex + 1}`,
+              content: btoa(unescape(encodeURIComponent(JSON.stringify(allClients, null, 2)))),
+              sha:     fileData.sha,
+              branch,
+            }),
+          }
+        );
+      } catch (e) {
+        // Fail silently — tracking is best-effort
+      }
+    }
+
+
+    /* ── Lock again ────────────────────────────────────────── */
+
     document.getElementById('lockAgainBtn')?.addEventListener('click', () => {
       galleryView.classList.remove('unlocked');
-      galleryView.style.display = '';
-      galleryLock.style.display = '';
-      passwordInput.value = '';
-      lockError.textContent = '';
+      galleryView.style.display  = '';
+      galleryLock.style.display  = '';
+      passwordInput.value        = '';
+      lockError.textContent      = '';
     });
+
+
+    /* ── Init ──────────────────────────────────────────────── */
+
+    loadClient();
 
   </script>
 </body>
