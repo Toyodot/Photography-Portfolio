@@ -82,7 +82,6 @@ const SHOOT_DATA = {
     date:     '19-10-2024',
     notes:    'Natural light only. Late afternoon golden hour. Minimal direction — mostly observed.',
     cover:    'assets/images/Agbara/cover.jpg',
-    tags:     ['Portraiture', 'Editorial'],
     images: [
       'assets/images/Agbara/01.jpg',
       'assets/images/Agbara/02.jpg',
@@ -105,7 +104,6 @@ const SHOOT_DATA = {
     date:     '14-02-2025',
     notes:    'Outreach coverage. Documentary approach. Focused on real moments, no staging.',
     cover:    'assets/images/shoot-placeholder.jpg',
-    tags:     ['Outreach', 'Documentary'],
     images: [
       'assets/images/fts2025/01.jpg',
       'assets/images/fts2025/02.jpg',
@@ -158,7 +156,6 @@ const SHOOT_DATA = {
     date:     '19-07-2025',
     notes:    'Behind the scenes. Documentary approach. Shot with intent. Focused on process, not performance.',
     cover:    'assets/images/ade-ibile/cover.jpg',
-    tags:     ['Cultural', 'Portraiture'],
     images: [
       'assets/images/ade-ibile/01.jpg',
       'assets/images/ade-ibile/02.jpg',
@@ -178,7 +175,6 @@ const SHOOT_DATA = {
     models:   'Gbadebo Grace',
     date:     '05-04-2025',
     notes:    'Portrait session. Outdoors, natural light, no staging. Focused on expression, form, and the movement of the bubu gown in real space',
-    tags:     ['Portraiture', 'Fashion'],
     cover:    'assets/images/shoot-placeholder.jpg',
     images: [
       'assets/images/feyi/01.jpg',
@@ -206,7 +202,6 @@ const SHOOT_DATA = {
     models:   'Victor Adebisi',
     date:     '09-07-2025',
     notes:    'Between setups—straightening the suit, watching the light shift, waiting for it to click. Nothing loud, just small moments lining up before the frame lands.',
-    tags:     ['Editorial', 'Portraiture'],
     cover:    'assets/images/shoot-placeholder.jpg',
     images: [
       'assets/images/mfy/01.jpg',
@@ -231,7 +226,6 @@ const SHOOT_DATA = {
     models:   'Theresa',
     date:     '2025',
     notes:    'Shot in direct daylight, no diffusion—just working with the sun as it moved. Minimal direction, mostly spacing, angles, and timing the light. Kept it simple so the frame could breathe.',
-    tags:     ['Portraiture', 'Fine Art'],
     cover:    'assets/images/shoot-placeholder.jpg',
     images: [
       'assets/images/repose/01.jpg',
@@ -255,7 +249,6 @@ const SHOOT_DATA = {
     models:   'Joseph Chinonso',
     date:     '16 November, 2024',
     notes:    'Studio portraiture | Editorial study | Controlled lighting and compositional exploration of form and presence in male portraiture. BTS: Single-light setup, teal cyclorama backdrop. Nikon D3200, 50mm. Multiple pose variations shot in one session, edited for tonal cohesion and shadow preservation.',
-    tags:     ['Minimalist', 'Portraiture'],
     cover:    'assets/images/shoot-placeholder.jpg',
     images: [
       'assets/images/bare/01.jpeg',
@@ -276,7 +269,6 @@ const SHOOT_DATA = {
     models:   'Olisaemeka Sydney, Victor Adebisi',
     date:     '19/10/2024',
     notes:    'Natural light location shoot. Nikon D3200, 35mm. Color-graded for textile detail and environmental richness.',
-    tags:     ['Family', 'Editorial'],
     cover:    'assets/images/kinship/cover.jpg',
     images: [
       'assets/images/kinship/01.jpg',
@@ -297,7 +289,6 @@ const SHOOT_DATA = {
     models:   '-',
     date:     '20-09-2024',
     notes:    'Quietude | A study in anonymity and introspection. Casual portraiture exploring the absence of face as narrative—the subject reduced to presence, clothing, and stance within natural landscape. A meditation on stillness and the unseen.',
-    tags:     ['Conceptual', 'Portraiture'],
     cover:    'assets/images/Quietude/cover.jpg',
     images: [
       'assets/images/Quietude/01.jpg',
@@ -315,7 +306,6 @@ const SHOOT_DATA = {
     models:   '-',
     date:     '',
     notes:    'Natural light location shoot. Canon EOS R5, 35mm. Color-graded to emphasize fabric depth and saturation while maintaining environmental clarity.',
-    tags:     ['Editorial', 'Fine Art'],
     cover:    'assets/images/inception/cover.jpg',
     images: [
       'assets/images/inception/01.jpg',
@@ -343,7 +333,6 @@ const SHOOT_DATA = {
     models:   '-',
     date:     '14-02-2023',
     notes:    'Available light, location work. Nikon D3200, 50mm. Shot in black and white to emphasize human presence and connection. Minimal processing—preserved grain and contrast to maintain documentary integrity.',
-    tags:     ['Outreach', 'Documentary'],
     cover:    'assets/images/fts-3.0/cover.jpg',
     images: [
       'assets/images/fts-3.0/01.jpg',
@@ -367,7 +356,6 @@ const SHOOT_DATA = {
     models:   'Afuye Faith',
     date:     '27-07-24',
     notes:    'Natural light location shoot. Nikon D3200, 50mm. Color-graded for subtle desaturation and tonal restraint to emphasize subject presence over environment.',
-    tags:     ['Conceptual', 'Editorial'],
     cover:    'assets/images/QA/cover.jpg',
     images: [
       'assets/images/QA/01.jpg',
@@ -379,6 +367,29 @@ const SHOOT_DATA = {
       'assets/images/QA/07.jpg',
       'assets/images/QA/08.jpg',
       'assets/images/QA/09.jpg',
+    ],
+  },
+
+  'Heirloom': {
+    counter:  '010',
+    title:    'Heirloom',
+    desc:     'Traditional Yoruba dress, open green space, natural light. A birthday portrait about cultural memory and the things we inherit.',
+    location: 'Abuja, Nigeria',
+    models:   'Onifade Adunni',
+    date:     '12 June, 2026',
+    notes:    '',
+    cover:    'assets/images/Heirloom/cover.webp',
+    images: [
+      'assets/images/Heirloom/01.webp',
+      'assets/images/Heirloom/02.webp',
+      'assets/images/Heirloom/03.webp',
+      'assets/images/Heirloom/04.webp',
+      'assets/images/Heirloom/05.webp',
+      'assets/images/Heirloom/06.webp',
+      'assets/images/Heirloom/07.webp',
+      'assets/images/Heirloom/08.webp',
+      'assets/images/Heirloom/09.webp',
+      'assets/images/Heirloom/10.webp',
     ],
   },
 
