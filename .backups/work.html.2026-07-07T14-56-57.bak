@@ -207,13 +207,6 @@
             <img src="assets/images/Heirloom/cover.webp" alt="Heirloom" onerror="this.style.display='none'" />
           </div>
           <span class="wheel-label">Heirloom</span>
-          <span class="wheel-year">12 June, 2026</span>
-        </div>
-        <div class="wheel-card" data-title="gbnaf-dignity-shelter">
-          <div class="wheel-thumb">
-            <img src="assets/images/gbnaf-dignity-shelter/cover.webp" alt="Dignity &amp; Shelter — GBNAF Outreach, Abuja" onerror="this.style.display='none'" />
-          </div>
-          <span class="wheel-label">Dignity &amp; Shelter — GBNAF Outreach, Abuja</span>
           <span class="wheel-year">2026</span>
         </div><!-- ADMIN_SHOOTS_END -->
 

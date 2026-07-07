@@ -393,38 +393,6 @@ const SHOOT_DATA = {
     ],
   },
 
-  'gbnaf-dignity-shelter': {
-    counter:  '019',
-    title:    'Dignity & Shelter — GBNAF Outreach, Abuja',
-    desc:     'A  visual record of the GBNAF Dignity & Shelter Basket program — an outreach bringing clothing and household essentials to families at an IDP camp in Abuja.',
-    location: 'Durumi, Abuja',
-    models:   'TBD',
-    date:     '4th July, 2026',
-    notes:    'Shot handheld, moving with the crowd — no setup, no posing. Just trying to keep up with what was actually happening.',
-    cover:    'assets/images/gbnaf-dignity-shelter/cover.webp',
-    images: [
-      'assets/images/gbnaf-dignity-shelter/01.webp',
-      'assets/images/gbnaf-dignity-shelter/02.webp',
-      'assets/images/gbnaf-dignity-shelter/03.webp',
-      'assets/images/gbnaf-dignity-shelter/04.webp',
-      'assets/images/gbnaf-dignity-shelter/05.webp',
-      'assets/images/gbnaf-dignity-shelter/06.webp',
-      'assets/images/gbnaf-dignity-shelter/07.webp',
-      'assets/images/gbnaf-dignity-shelter/08.webp',
-      'assets/images/gbnaf-dignity-shelter/09.webp',
-      'assets/images/gbnaf-dignity-shelter/10.webp',
-      'assets/images/gbnaf-dignity-shelter/11.webp',
-      'assets/images/gbnaf-dignity-shelter/12.webp',
-      'assets/images/gbnaf-dignity-shelter/13.webp',
-      'assets/images/gbnaf-dignity-shelter/14.webp',
-      'assets/images/gbnaf-dignity-shelter/15.webp',
-      'assets/images/gbnaf-dignity-shelter/16.webp',
-      'assets/images/gbnaf-dignity-shelter/17.webp',
-      'assets/images/gbnaf-dignity-shelter/18.webp',
-      'assets/images/gbnaf-dignity-shelter/19.webp',
-    ],
-  },
-
   // EDIT: Add more shoots here. Also add a .wheel-card in work.html.
 
 };
