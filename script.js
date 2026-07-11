@@ -1250,7 +1250,7 @@ function updateOGTags(shootId, shootData) {
   
   const title = shootData.title + ' — Omotoyosi';
   const description = shootData.desc || 'Editorial photography by Omotoyosi';
-  const imageUrl = shootData.cover || 'https://toyosarchive.vercel.app/assets/images/landing-bg.jpg';
+  const imageUrl = shootData.cover || 'https://toyosarchive.vercel.app/assets/images/landing-bg.webp';
   const pageUrl = `https://toyosarchive.vercel.app/shoot.html?id=${shootId}`;
   
   // Update OG meta tags
