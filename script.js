@@ -1240,6 +1240,42 @@ if (emailLine) setTimeout(() => emailLine.classList.add('go'), 700);
 
 
 /* ============================================================
+   13.5 SOCIAL SHARING: UPDATE OG TAGS
+   Updates Open Graph meta tags when a shoot is loaded.
+   Used for social media previews (WhatsApp, Instagram, Discord, etc.)
+   ============================================================ */
+
+function updateOGTags(shootId, shootData) {
+  if (!shootData) return;
+  
+  const title = shootData.title + ' — Omotoyosi';
+  const description = shootData.desc || 'Editorial photography by Omotoyosi';
+  const imageUrl = shootData.cover || 'https://toyosarchive.vercel.app/assets/images/landing-bg.jpg';
+  const pageUrl = `https://toyosarchive.vercel.app/shoot.html?id=${shootId}`;
+  
+  // Update OG meta tags
+  const ogTitle = document.getElementById('og-title');
+  const ogDesc = document.getElementById('og-description');
+  const ogImage = document.getElementById('og-image');
+  const ogUrl = document.getElementById('og-url');
+  
+  if (ogTitle) ogTitle.content = title;
+  if (ogDesc) ogDesc.content = description;
+  if (ogImage) ogImage.content = imageUrl;
+  if (ogUrl) ogUrl.content = pageUrl;
+  
+  // Update Twitter Card meta tags
+  const twitterTitle = document.getElementById('twitter-title');
+  const twitterDesc = document.getElementById('twitter-description');
+  const twitterImage = document.getElementById('twitter-image');
+  
+  if (twitterTitle) twitterTitle.content = title;
+  if (twitterDesc) twitterDesc.content = description;
+  if (twitterImage) twitterImage.content = imageUrl;
+}
+
+
+/* ============================================================
    14. SHOOT PAGE (shoot.html)
    Reads ?id= from URL, populates page from SHOOT_DATA,
    builds grid with staggered 3D flip entrance animation.
@@ -1254,6 +1290,9 @@ if (shootGrid) {
   if (data) {
     // Update page title
     document.title = `${data.title} — Omotoyosi`;
+    
+    // Update OG tags for social sharing
+    updateOGTags(shootId, data);
 
     // Populate text fields
     document.getElementById('sCounter').textContent  = data.counter  || '001';
